@@ -1,0 +1,12 @@
+.error-container {
+  box-sizing: border-box;
+  padding: 0 1rem;
+  overflow: auto;
+}
+
+.error-message {
+  word-break: break-word;
+  hyphens: auto;
+  text-align: center;
+  margin: 0;
+}

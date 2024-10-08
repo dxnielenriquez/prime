@@ -1,0 +1,22 @@
+:root {
+  --color-primary: #0D0E12;
+  --color-secondary: #2096D4;
+}
+
+
+.bg-secondary {
+  background-color: var(--color-secondary);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-origin: padding-box;
+  opacity: 1;
+}
+
+
+.bg-white {
+  background-color: var(--color-primary);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-origin: padding-box;
+  opacity: 1;
+}

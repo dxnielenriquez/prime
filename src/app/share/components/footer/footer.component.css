@@ -1,0 +1,15 @@
+.layout-footer {
+  background: var(--surface-card);
+  height: 3rem;
+  border-top: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.layout-footer .footer-copyright {
+  font-size: .875rem;
+  color: var(--text-color-secondary);
+}

@@ -1,0 +1,19 @@
+.menu-container {
+  padding: 15px 15px 17px 15px;
+  min-width: 400px;
+}
+
+.cuadrito {
+  background-color: #2fa6e5;
+  width: 70px;
+  height: 70px;
+  align-content: center;
+  color: #1DC9B7;
+  font-size: 30px;
+  font-weight: 400;
+}
+
+.custom-avatar {
+  background-color: var(--color-primary);
+  color: white
+}
