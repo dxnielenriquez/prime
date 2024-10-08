@@ -2,7 +2,8 @@
   <div class="header flex justify-content-between align-items-center">
     <span class="header-title">Usuarios</span>
     <div>
-      <button  *ngxPermissionsOnly="'web.usuarios.store'" pButton pRipple icon="pi pi-user-plus" label="Add New" [routerLink]="['add']"
+      <button *ngxPermissionsOnly="'web.baja'" pButton pRipple icon="pi pi-user-plus" label="Add New"
+              [routerLink]="['add']"
               class="p-element custom-button w-full sm:w-auto flex-order-0 sm:flex-order-2">
         <i class="p-button-icon pi pi-user-plus" aria-hidden="true"></i>
         <span class="p-button-label pl-2">Nuevo usuario</span>
@@ -40,11 +41,22 @@
               <span class="p-button-icon p-button-icon-left pi pi-filter-slash" aria-hidden="true"></span>
               <span class="p-button-label">Limpiar filtro</span>
             </button>
-            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="getDeletedUsers()"
-                    class= "p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component" [ngClass]="[deleted ? 'inactive-button' : 'active-button']">
-              <span class="p-button-icon p-button-icon-left pi" [ngClass]="[deleted ? 'pi-times' : 'pi-check']" aria-hidden="true"></span>
-              <span class="p-button-label">Usuarios {{ deleted? ' Inactivos' :  ' Activos' }}</span>
+            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
+              <span class="p-button-icon p-button-icon-left pi pi-download" aria-hidden="true"></span>
+              <span class="p-button-label">Reporte pagadora</span>
             </button>
+            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
+              <span class="p-button-icon p-button-icon-left pi pi-download" aria-hidden="true"></span>
+              <span class="p-button-label">Descargar cartas de renuncia</span>
+            </button>
+            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
+              <span class="p-button-icon p-button-icon-left pi pi-download" aria-hidden="true"></span>
+              <span class="p-button-label">Exportar aceptados</span>
+            </button>
+
           </div>
         </div>
       </ng-template>
@@ -54,35 +66,24 @@
               [pSortableColumn]="col.field">{{ col.header }}
             <p-sortIcon [field]="col.field"></p-sortIcon>
           </th>
-          <th class="cursor-pointer" (click)="filterHidden = !filterHidden">Acciones <i class="pi"
-              [ngClass]="filterHidden ? 'pi-filter' : 'pi-filter-fill'"></i>
+          <th class="cursor-pointer" (click)="filterHidden = !filterHidden">Acciones
           </th>
         </tr>
-        <tr [hidden]="filterHidden">
-          <th *ngFor="let col of columns">
-            <p-columnFilter
-              type="text"
-              [field]="col.field"
-              [placeholder]="'Buscar ' + col.header"
-              [ariaLabel]="'Filtro ' + col.header"/>
-          </th>
-          <th></th>
-        </tr>
+
       </ng-template>
       <ng-template pTemplate="body" let-rowData let-columns="columns">
         <tr>
-          <td *ngFor="let col of columns" >
+          <td *ngFor="let col of columns; let i = index">
             {{ rowData[col.field] }}
           </td>
           <td class="text-center">
-            <i *ngIf="!rowData.deleted_at"  class="pi pi-pencil pr-2 cursor-pointer" [routerLink]="['edit', rowData.id]"></i>
-            <i class="pi pi-trash cursor-pointer" [ngClass]="rowData.deleted_at ? 'pi-check' : 'pi-trash'" (click)="delete($event, rowData)"></i>
+            <i *ngIf="!rowData.deleted_at" class="pi pi-eye pr-2 cursor-pointer" (click)="mostrarDetalle(rowData.id)"></i>
           </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="5">No se encontraron usuarios.</td>
+          <td [colSpan]="columns.length + 1">No se encontraron usuarios.</td>
         </tr>
       </ng-template>
     </p-table>

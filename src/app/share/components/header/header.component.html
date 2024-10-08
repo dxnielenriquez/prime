@@ -1,12 +1,6 @@
 <div class="card">
-  <p-menubar [model]="items">
-    <ng-template pTemplate="item" let-item let-root="root">
-      <a pRipple class="flex p-menuitem-link" *ngIf="isMobileView" [routerLink]="item.routerLink">
-        <span [class]="item.icon"></span>
-        <span class="ml-2">{{ item.label }}</span>
-        <i *ngIf="item.items" [ngClass]="['pi', root ? 'pi-angle-down ml-2' : 'pi-angle-right ml-auto']"></i>
-      </a>
-    </ng-template>
+  <p-menubar >
+
     <ng-template pTemplate="end">
       <div class="flex align-items-center cursor-pointer gap-2">
         <p-avatar [style]="{'background-color': '#343a40', 'color': 'white'}" (click)="op.toggle($event)"

@@ -5,7 +5,7 @@ export const baseUrlInterceptor: HttpInterceptorFn = (request, next) => {
 
   let baseUrl = environment.api.baseUrl;
 
-  if(request.url == 'login')
+  if(request.url == 'login' || request.headers.get('noWeb'))
     baseUrl = environment.api.baseUrl.replace('/web','');
 
 

@@ -17,11 +17,16 @@ import {MatTooltip} from "@angular/material/tooltip";
 import {TooltipModule} from "primeng/tooltip";
 import {LoadingService} from "../../../share/services/loading.service";
 import {NgxPermissionsModule} from "ngx-permissions";
+import {DropdownModule} from "primeng/dropdown";
+import {DialogService} from "primeng/dynamicdialog";
+import {ModalVisualizarComponent} from "../../../share/components/modals/modal-visualizar/modal-visualizar.component";
+import {Footer} from "../../../share/components/modals/footer";
+
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, TableModule, TagModule, IconFieldModule, InputIconModule, InputTextModule, ButtonDirective, PasswordModule, FormsModule, Button, Ripple, RouterLink, ModalAlertComponent, MatTooltip, TooltipModule, NgxPermissionsModule],
+  imports: [CommonModule, TableModule, TagModule, IconFieldModule, InputIconModule, InputTextModule, ButtonDirective, PasswordModule, FormsModule, Button, Ripple, RouterLink, ModalAlertComponent, MatTooltip, TooltipModule, NgxPermissionsModule, DropdownModule],
   providers: [ConfirmationService, MessageService, LoadingService],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
@@ -32,35 +37,74 @@ export class UsersComponent implements OnInit {
   loading: boolean = true;
   searchValue: string | undefined
   filterHidden = true;
-  dataSource = ['nombre', 'email', 'role'];
+  dataSource = ['fecha_registro', 'vacante', 'estado', 'nombre', 'estado_origen', 'clave_ine', 'estatus', 'procesado'];
   deleted = false;
+  estados = [];
+  vacantes = [];
+
 
   constructor(
     private _userService: UsersService,
     private primeConfig: PrimeNGConfig,
-    private confirmationService: ConfirmationService,
-    private messageService: MessageService,
-    private _loading: LoadingService) {
+    private dialogService: DialogService) {
     this.primeConfig.ripple = true;
+    this.getEstados();
   }
+
 
   ngOnInit() {
     this.getUser();
 
     this.columns = [
-      {field: 'nombre', header: 'Nombre', width: 30},
-      {field: 'email', header: 'Correo', width: 30},
-      {field: 'role', header: 'Rol', width: 30},
+      {filterType: 'date', field: 'fecha_registro', header: 'Fecha de registro', width: 11},
+      {field: 'vacante', header: 'Vacante', width: 11},
+      {field: 'estado', header: 'Ubicacion', width: 11},
+      {filterType: 'text', field: 'nombre', header: 'Nombre', width: 11},
+      {field: 'estado_origen', header: 'Estado de origen', width: 11},
+      {field: 'clave_ine', header: 'Clave de elector', width: 11},
+      {field: 'estatus', header: 'Estatus', width: 11},
+      {field: 'procesado', header: 'Procesado por', width: 11},
     ];
 
   }
 
   getUser() {
-    this._userService.getUsers(this.deleted).subscribe((res: any) => {
+    this._userService.getListado().subscribe((res: any) => {
       this.loading = false;
-      this.users = res.data;
+      this.users = res;
     })
   }
+
+  getEstados() {
+    this._userService.getEstados().subscribe((res: any) => {
+      this.estados = res.estados;
+      this.vacantes = res.vacantes;
+    });
+
+  }
+
+  mostrarDetalle(id: number) {
+    let url = 'visualizar-detalle/' + id;
+
+    this._userService.showDetalle(id).subscribe(res => {
+      this.dialogService.open(ModalVisualizarComponent,
+        {
+          header: 'Registro',
+          width: '60vw',
+          height: '60vh',
+          contentStyle: {overflow: 'auto'},
+          breakpoints: {
+            '991px': '75vw',
+            '640px': '90vw'
+          },
+          templates: {
+            footer: Footer
+          },
+          data: res
+        })
+    });
+  }
+
 
   event(ev: any) {
     return ev.value;
@@ -71,42 +115,7 @@ export class UsersComponent implements OnInit {
     this.searchValue = '';
   }
 
-  getDeletedUsers() {
-    this.deleted = !this.deleted;
-    this.getUser();
-  }
 
-  delete(event: Event, user: any) {
-    this.confirmationService.confirm({
-      target: event.target as EventTarget,
-      message: '¿Está seguro de eliminar el usuario ' + user.nombre + '?',
-      header: 'Eliminar Usuario',
-      acceptButtonStyleClass: "p-button-text p-button-text",
-      rejectButtonStyleClass: "p-button-danger p-button-text",
-      acceptLabel: "Sí",
 
-      accept: () => {
-        this._userService.delete(user.id)
-          .subscribe({
-            next: any => {
-              this.messageService.add({
-                severity: 'info',
-                summary: 'Eliminado',
-                detail: 'El usuario ha sido eliminado con éxito.'
-              });
-              this.getUser();
-            },
-            error: any => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: 'Ocurrió un error al eliminar el usuario.'
-              });
-            }
-
-          });
-      }
-    });
-  }
 
 }

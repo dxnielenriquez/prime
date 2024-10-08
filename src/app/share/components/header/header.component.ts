@@ -33,24 +33,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit() {
     this.checkMobileView();
-    this.items = [
-      {
-        label: 'Dashboard',
-        icon: 'pi pi-home',
-        routerLink: '/home/dashboard'
-      },
-      {
-        label: 'Management',
-        icon: 'pi pi-spin pi-cog',
-        items: [
-          {
-            label: 'Users',
-            icon: 'pi pi-user',
-            routerLink: '/management/users'
-          },
-        ]
-      },
-    ];
   }
 
   checkMobileView() {

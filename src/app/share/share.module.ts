@@ -7,10 +7,13 @@ import {NgxMaskDirective, NgxMaskPipe, provideNgxMask} from "ngx-mask";
 import {NgbModalModule, NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MaterialModule} from "./material/material.module";
+import {Button} from "primeng/button";
+import {DialogModule} from "primeng/dialog";
 
 
 @NgModule({
   declarations: [
+
   ],
   imports: [
     CalendarModule.forRoot({
@@ -22,6 +25,8 @@ import {MaterialModule} from "./material/material.module";
     NgxMaskPipe,
     NgOptimizedImage,
     CommonModule,
+    Button,
+    DialogModule,
   ],
   exports: [
     CommonModule,

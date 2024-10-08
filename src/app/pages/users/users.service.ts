@@ -11,13 +11,25 @@ export class UsersService {
   ) {
   }
 
-  public getUsers(deleted: boolean): Observable<any> {
 
-    const isDeleted = +deleted;
-    return this._http.get(`usuarios?deleted=${isDeleted}`, {
+  public getListado() {
+    return this._http.get('listado-registro', {
       headers: {noLoading: 'true'}
     });
   }
+
+  public getEstados() {
+    return this._http.get('estados', {
+      headers: {noWeb: 'true'}
+    });
+  }
+
+  public showDetalle(id: any) {
+    return this._http.get( 'visualizar-detalle/' + id, {
+      headers: { noLoading: 'true' }
+    });
+  }
+
 
   public roles(): Observable<any> {
     return this._http.get('usuarios/roles', {

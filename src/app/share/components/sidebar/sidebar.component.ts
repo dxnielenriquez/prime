@@ -24,31 +24,7 @@ export interface MenuItem {
   styleUrl: './sidebar.component.css'
 })
 export class SidebarComponent implements OnInit {
-  isShowing = false;
   isMobileView: boolean = false;
-  @Input() menuItems: MenuItem[] = [
-    {
-      label: 'Dashboard',
-      icon: 'pi-home',
-      route: '/home/dashboard',
-      subItems: []
-    },
-    {
-      label: 'Administración',
-      icon: 'pi-spin pi-cog',
-      expandable: true,
-      expanded: false,
-      subItems: [
-        {
-          label: 'Usuarios',
-          icon: 'pi-user',
-          route: '/management/users',
-          subItems: [],
-        },
-      ],
-    },
-
-  ];
 
   constructor() {
   }
@@ -64,20 +40,6 @@ export class SidebarComponent implements OnInit {
 
   checkMobileView() {
     this.isMobileView = window.innerWidth <= 960;
-  }
-
-  toggleMenuItem(item: any) {
-    if (item.expandable) {
-      item.expanded = !item.expanded;
-    }
-  }
-
-  mouseenter() {
-    this.isShowing = true;
-  }
-
-  mouseleave() {
-    this.isShowing = false;
   }
 
 }

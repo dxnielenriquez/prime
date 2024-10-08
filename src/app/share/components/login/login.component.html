@@ -1,11 +1,8 @@
 <div class="login-container">
   <div class="surface-card p-4 shadow-5 border-round lg:w-4 w-11">
     <div class="text-center mb-5">
-      <div class="text-900 text-3xl font-medium mb-3">Bienvenido</div>
-      <span class="text-600 font-medium line-height-3">¿No tienes cuenta?</span>
-      <a class="font-medium underline ml-2 text-blue-500 cursor-pointer">Regístrate</a>
+     <img width="50%" height="50%" src="assets/images/logo.png">
     </div>
-
     <div>
 
       <form class="form" [formGroup]="loginForm" autocomplete="off">
@@ -29,10 +26,6 @@
           </p-floatLabel>
           <small *ngIf="isControlHasError('password','required')" class="text-red-400">
             La contraseña es requerida.</small>
-        </div>
-
-        <div class="flex align-items-end justify-content-end mb-6 mt-2">
-          <a class="font-medium underline ml-2 text-blue-500 text-right cursor-pointer">¿Olvidaste tú contraseña?</a>
         </div>
 
         <button pButton (click)="submit()" label="Inicia sesión" icon="pi pi-user" class="w-full"></button>

@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
   ) {
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(["/home/dashboard"]).then();
+      this.router.navigate(["/administracion/listado-registros"]).then();
     }
     this.loginForm = this.fb.group({
       email: ['user@iemail.com', [Validators.required, Validators.email]],
@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginData)
       .subscribe({
         next: () => {
-          this.router.navigate(["/home/dashboard"]).then();
+          this.router.navigate(["/administracion/listado-registros"]).then();
         }
       })
   }
