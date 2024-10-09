@@ -22,8 +22,10 @@ export class HeaderComponent implements OnInit {
     private auth: AuthService,
     private router: Router
   ) {
-
-    this.username = auth.getUser()!.nombre
+    const user = auth.getUser();
+    if (user) {
+      this.username = user.nombre
+    }
   }
 
   @HostListener('window:resize', ['$event'])
