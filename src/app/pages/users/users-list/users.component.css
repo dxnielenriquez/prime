@@ -1,0 +1,5 @@
+@media screen and (min-width: 1000px) {
+  .w-24 {
+    width: 24% !important;
+  }
+}

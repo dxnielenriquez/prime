@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient } from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 
 @Injectable({
@@ -12,10 +12,12 @@ export class UsersService {
   }
 
 
-  public getListado() {
-    return this._http.get('listado-registro', {
-      headers: {noLoading: 'true'}
-    });
+  public getListado(fecha_ini: string, fecha_fin: string) {
+    let params = new HttpParams();
+    (fecha_ini) ? params = params.append('fecha_ini', fecha_ini) : '';
+    (fecha_fin) ? params = params.append('fecha_fin', fecha_fin) : '';
+
+    return this._http.get('listado-registro', {params: params});
   }
 
   public getEstados() {
@@ -25,8 +27,8 @@ export class UsersService {
   }
 
   public showDetalle(id: any) {
-    return this._http.get( 'visualizar-detalle/' + id, {
-      headers: { noLoading: 'true' }
+    return this._http.get('visualizar-detalle/' + id, {
+      headers: {noLoading: 'true'}
     });
   }
 

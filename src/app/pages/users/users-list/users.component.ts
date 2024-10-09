@@ -20,14 +20,15 @@ import {NgxPermissionsModule} from "ngx-permissions";
 import {DropdownModule} from "primeng/dropdown";
 import {DialogService} from "primeng/dynamicdialog";
 import {ModalVisualizarComponent} from "../../../share/components/modals/modal-visualizar/modal-visualizar.component";
-import {Footer} from "../../../share/components/modals/footer";
 import {FooterEditComponent} from "../../../share/components/modals/footer-edit.component";
+import {CalendarModule} from "primeng/calendar";
+import {FloatLabelModule} from "primeng/floatlabel";
 
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, TableModule, TagModule, IconFieldModule, InputIconModule, InputTextModule, ButtonDirective, PasswordModule, FormsModule, Button, Ripple, RouterLink, ModalAlertComponent, MatTooltip, TooltipModule, NgxPermissionsModule, DropdownModule],
+  imports: [CommonModule, TableModule, TagModule, IconFieldModule, InputIconModule, InputTextModule, ButtonDirective, PasswordModule, FormsModule, Button, Ripple, RouterLink, ModalAlertComponent, MatTooltip, TooltipModule, NgxPermissionsModule, DropdownModule, CalendarModule, FloatLabelModule],
   providers: [ConfirmationService, MessageService, LoadingService],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
@@ -37,12 +38,17 @@ export class UsersComponent implements OnInit {
   columns!: any[];
   loading: boolean = true;
   searchValue: string | undefined
-  filterHidden = true;
   dataSource = ['fecha_registro', 'vacante', 'estado', 'nombre', 'estado_origen', 'clave_ine', 'estatus', 'procesado'];
-  estados = [];
-  vacantes = [];
-
-
+  estados: any = [];
+  vacantes: any = [];
+  rangeDates: Date[] = [];
+  estatus = [
+    {'nombre': 'Todos los estatus', 'campo': ''},
+    {'nombre': 'Pendientes', 'campo': 'Pendiente'},
+    {'nombre': 'Rechazados', 'campo': 'Rechazado'},
+    {'nombre': 'Aceptados', 'campo': 'Aceptado'},
+    {'nombre': 'Baja', 'campo': 'Baja'},
+  ];
   constructor(
     private _userService: UsersService,
     private primeConfig: PrimeNGConfig,
@@ -53,7 +59,7 @@ export class UsersComponent implements OnInit {
 
 
   ngOnInit() {
-    this.getUser();
+    this.getRegistros();
 
     this.columns = [
       {filterType: 'date', field: 'fecha_registro', header: 'Fecha de registro', width: 11},
@@ -68,8 +74,12 @@ export class UsersComponent implements OnInit {
 
   }
 
-  getUser() {
-    this._userService.getListado().subscribe((res: any) => {
+  getRegistros() {
+
+    const fecha_ini = this.formatoFecha(this.rangeDates[0]);
+    const fecha_fin = this.formatoFecha(this.rangeDates[1]);
+
+    this._userService.getListado(fecha_ini, fecha_fin).subscribe((res: any) => {
       this.loading = false;
       this.users = res;
     })
@@ -80,7 +90,8 @@ export class UsersComponent implements OnInit {
       this.estados = res.estados;
       this.vacantes = res.vacantes;
     });
-
+    this.estados.unshift({'nombre': ''})
+    this.estados.unshift({'descripcion': ''})
   }
 
   mostrarDetalle(id: number) {
@@ -116,6 +127,14 @@ export class UsersComponent implements OnInit {
   }
 
 
+  formatoFecha(fecha: Date): string {
+    if (!fecha) return '';
 
+    const date = new Date(fecha);
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
 
+    return `${year}-${month}-${day}`;
+  }
 }

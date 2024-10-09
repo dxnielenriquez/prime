@@ -21,15 +21,16 @@
       paginatorStyleClass="text-end"
       responsiveLayout="stack"
     >
-      <ng-template pTemplate="caption">
+      <ng-template pTemplate="caption" let-columns>
         <div class="ng-star-inserted">
-          <div class="flex flex-wrap gap-2 align-items-center ng-star-inserted">
+          <div class="flex flex-wrap gap-2 align-items-center ng-star-inserted pb-2">
             <span class="p-input-icon-left sm:w-20rem flex-order-1 sm:flex-order-0 w-full">
                 <i class="pi pi-search"></i>
                 <input pInputText type="text" [(ngModel)]="searchValue" [style]="{'width': '100%'}"
                        (input)="dt2.filterGlobal(event($event.target), 'contains')" placeholder="Buscar"/>
             </span>
-            <button *ngxPermissionsOnly="'web.baja'" pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
+            <button *ngxPermissionsOnly="'web.baja'" pButton pRipple icon="pi pi-user-plus" label="Add New"
+                    (click)="clearTable(dt2)"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
               <span class="p-button-icon p-button-icon-left pi pi-filter-slash" aria-hidden="true"></span>
               <span class="p-button-label">Limpiar filtro</span>
@@ -51,6 +52,78 @@
             </button>
 
           </div>
+          <div
+            class="flex flex-wrap font-normal gap-2 align-items-center justify-content-between ng-star-inserted ">
+            <span class="p-input-icon-left w-24 flex-order-1 sm:flex-order-0 w-full pt-4">
+               <p-floatLabel>
+                <p-calendar
+                  [(ngModel)]="rangeDates"
+                  (onClose)="getRegistros()"
+                  id="calendar"
+                  [style]="{'width': '100%'}"
+                  selectionMode="range"
+                  [readonlyInput]="true"
+                  [showIcon]="true"
+                  [stepYearPicker]="false"
+                  [iconDisplay]="'input'"/>
+                  <label for="calendar">Fecha</label>
+                 </p-floatLabel>
+            </span>
+
+            <span class="p-input-icon-left w-24 flex-order-2 sm:flex-order-0 w-full pt-4">
+                <p-columnFilter id="vacante" [field]="'vacante'" [showClearButton]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-floatLabel>
+                              <p-dropdown
+                                [options]="vacantes"
+                                (onChange)="filter($event.value)"
+                                optionLabel="descripcion"
+                                optionValue="descripcion"
+                                placeholder="Select One"
+                                [showClear]="true">
+                              </p-dropdown>
+                      <label for="vacante">Vacante</label>
+                    </p-floatLabel>
+                    </ng-template>
+                </p-columnFilter>
+            </span>
+
+            <span class="p-input-icon-left w-24 flex-order-2 sm:flex-order-0 w-full pt-4">
+                <p-columnFilter id="estado" [field]="'estado'"  [showClearButton]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-floatLabel>
+                              <p-dropdown
+                                [options]="estados"
+                                (onChange)="filter($event.value)"
+                                optionLabel="nombre"
+                                optionValue="nombre"
+                                placeholder="Select One"
+                                [showClear]="true">
+                              </p-dropdown>
+                      <label for="estado">Estado</label>
+                    </p-floatLabel>
+                    </ng-template>
+                </p-columnFilter>
+            </span>
+
+            <span class="p-input-icon-left w-24 flex-order-2 sm:flex-order-0 w-full pt-4">
+                <p-columnFilter id="estatus" [field]="'estatus'"  [showClearButton]="false">
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                    <p-floatLabel>
+                              <p-dropdown
+                                [options]="estatus"
+                                (onChange)="filter($event.value)"
+                                optionLabel="nombre"
+                                optionValue="campo"
+                                placeholder="Select One"
+                                [showClear]="true">
+                              </p-dropdown>
+                      <label for="estatus">Estatus</label>
+                    </p-floatLabel>
+                    </ng-template>
+                </p-columnFilter>
+            </span>
+          </div>
         </div>
       </ng-template>
       <ng-template pTemplate="header" let-columns>
@@ -69,13 +142,14 @@
             {{ rowData[col.field] }}
           </td>
           <td class="text-center">
-            <i *ngIf="!rowData.deleted_at" class="pi pi-eye pr-2 cursor-pointer" (click)="mostrarDetalle(rowData.id)"></i>
+            <i *ngIf="!rowData.deleted_at" class="pi pi-eye pr-2 cursor-pointer"
+               (click)="mostrarDetalle(rowData.id)"></i>
           </td>
         </tr>
       </ng-template>
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td [colSpan]="columns.length + 1">No se encontraron usuarios.</td>
+          <td [colSpan]="columns.length + 1">No se encontraron registros.</td>
         </tr>
       </ng-template>
     </p-table>
