@@ -6,12 +6,12 @@
   border: 1px solid #007bff;
   cursor: pointer;
   padding: 0.5rem 1rem;
-  background-color: #0e569f;
+  background-color: #126bc4;
   transition: background-color 0.3s;
 }
 
 .custom-button:hover:not(.disabled) {
-  background-color: #122c46;
+  background-color: #e2e6ea;
 }
 
 .custom-button.disabled {
@@ -27,3 +27,35 @@
 .next-button {
   margin-left: auto;
 }
+
+.margin {
+  align-items: center;
+  justify-content: center;
+  padding: 3%;
+}
+
+@media (max-width: 768px) {
+  .p-steps {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .p-steps .ui-steps-item {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+    width: 90%;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+  }
+
+  .ui-steps-item {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+
+
+

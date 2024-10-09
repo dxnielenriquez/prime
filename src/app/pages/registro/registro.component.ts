@@ -1,10 +1,10 @@
-import {Component, inject, OnInit, } from '@angular/core';
+import {Component, OnInit, } from '@angular/core';
 import {ToastModule} from "primeng/toast";
 import {StepsModule} from "primeng/steps";
 import {Button} from "primeng/button";
 import {MatStep, MatStepper} from "@angular/material/stepper";
 import {
-  FormBuilder, FormsModule,
+  FormsModule,
   ReactiveFormsModule,
   UntypedFormBuilder,
   UntypedFormControl,
@@ -14,35 +14,25 @@ import {
 import {NgIf, NgTemplateOutlet} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
 import {RegistroService} from "./registro.service";
+import {MenuItem} from "primeng/api";
+import {FloatLabelModule} from "primeng/floatlabel";
+import {ChipsModule} from "primeng/chips";
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule],
+  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
 export class RegistroComponent implements OnInit {
-
-  private _formBuilder = inject(FormBuilder);
-
-  firstFormGroup = this._formBuilder.group({
-    firstCtrl: ['', Validators.required],
-  });
-  secondFormGroup = this._formBuilder.group({
-    secondCtrl: ['', Validators.required],
-  });
-  isLinear = false;
-
-
+  items: MenuItem[] | undefined;
+  active: number = 0;
   vertical = false;
   form: UntypedFormGroup = new UntypedFormGroup({});
   aviso: UntypedFormControl | undefined;
   beneficiarioForm: UntypedFormGroup = new UntypedFormGroup({});
   vacantes = [];
-  selectedVacante: any;
-  selectedEstado: any;
-  selectedMunicipio: any;
   estados = [];
   estadosOrigen = [];
   estadosBeneficiario = [];
@@ -64,15 +54,18 @@ export class RegistroComponent implements OnInit {
     this.getSexo();
     this.getEstadoCivil();
     this.getParentesco();
-
   }
 
   ngOnInit() {
+    this.items = [
+      {  label: 'Vacantes'},
+      { label: 'Solicitante'},
+      { label: 'Beneficiario'},
+      { label: 'Documentación'}
+    ];
+
     this.crearFormulario();
 
-  }
-
-  onVacanteChange(event: any): void {
   }
 
   crearFormulario() {
@@ -108,9 +101,7 @@ export class RegistroComponent implements OnInit {
     this.beneficiarioForm = this.fb.group({
       estado_id: ['', Validators.required],
       municipio_id: [{value: '', disabled: true}, Validators.required],
-      // nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), NoSpaces, Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-
       apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       telefono: ['', [Validators.required,  Validators.minLength(10), Validators.maxLength(10)]],
@@ -123,33 +114,6 @@ export class RegistroComponent implements OnInit {
       codigo_postal: ['', [ Validators.minLength(5)]],
     });
   }
-
-
-
-  vacanteCompleted() {
-    let controls = this.form.controls
-    return controls['vacante_id'].valid && controls['estado_id'].valid && controls['municipio_id'].valid
-  }
-
-
-  isControlValid(controlName: string): boolean {
-    let control = this.form.controls[controlName];
-    if (!control) {
-      return false;
-    } else if (control.valid) {
-      return false;
-    }
-    return true;
-  }
-
-  isControlHasError(controlName: string, validationType: string) {
-    let control = this.form.controls[controlName];
-    if (!control) {
-      return false;
-    }
-    return control.hasError(validationType) && (control.dirty || control.touched);
-  }
-
 
   getEstados() {
     this.registroService.getEstados().subscribe((res) => {
@@ -179,7 +143,7 @@ export class RegistroComponent implements OnInit {
     let municipio = this.form.get('municipio_id');
     municipio!.disable();
     this.registroService.getMunicipios(values.estado_id).subscribe(res => {
-      this.municipios = res.municipios;
+      this.municipios = res;
       municipio!.enable();
       municipio!.reset();
     });
@@ -210,6 +174,9 @@ export class RegistroComponent implements OnInit {
     this.registroService.getParentezco().subscribe(res => {
       this.parentescos = res;
     })
+  }
+
+  onVacanteChange(event: any): void {
   }
 
 

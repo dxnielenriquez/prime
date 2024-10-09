@@ -1,80 +1,105 @@
-<!-- DESKTOP STEPPER -->
-<mat-horizontal-stepper class="contenedor-formulario" *ngIf="!vertical" #stepper>
-  <mat-step class="vacantes" label="Vacantes" [completed]="vacanteCompleted()">
-    <ng-container *ngTemplateOutlet="vacante"></ng-container>
-  </mat-step>
-
-  <!--  <mat-step label="Solicitante" [completed]="informacionCompleted()"-->
-  <!--            [aria-labelledby]="!vacanteCompleted() ? 'disable_step' : null">-->
-  <!--    <ng-container *ngTemplateOutlet="solicitante"></ng-container>-->
-  <!--  </mat-step>-->
-
-  <!--  <mat-step [formGroup]="beneficiarioForm" label="Beneficiario" [completed]="beneficiarioCompleted()"-->
-  <!--            [aria-labelledby]="!informacionCompleted() ? 'disable_step' : null">-->
-  <!--    <ng-container *ngTemplateOutlet="beneficiario"></ng-container>-->
-  <!--  </mat-step>-->
-
-  <!--  <mat-step label="Documentación" [completed]="documentacionCompleted()"-->
-  <!--            [aria-labelledby]="!informacionCompleted() ? 'disable_step' : null">-->
-  <!--    <ng-container *ngTemplateOutlet="documentacion"></ng-container>-->
-  <!--  </mat-step>-->
-</mat-horizontal-stepper>
-
-
-<ng-template [formGroup]="form" #vacante>
-  <div class="card">
-    <div class="card-header w-100 text-center">
-      <h2>Datos de la vacante</h2>
-    </div>
-    <div class="card-body">
-      <div class="formulario-group vac">
-
-        <p-dropdown
-          [options]="vacantes"
-          [(ngModel)]="selectedVacante"
-          optionLabel="descripcion"
-          placeholder="Seleccione una vacante"
-          required
-          (onChange)="onVacanteChange($event)">
-        </p-dropdown>
-        <p *ngIf="isControlValid('vacante_id')" class="p-error">Por favor selecciona una vacante</p>
-
-      </div>
-
-      <div class="formulario-group edo-mun">
-        <p-dropdown
-          [options]="estados"
-          [(ngModel)]="selectedEstado"
-          optionLabel="nombre"
-          optionValue="id"
-          placeholder="Seleccione un estado"
-          [required]="true"
-          (onChange)="getMunicipios()">
-        </p-dropdown>
-
-        <p-dropdown
-          [options]="municipios"
-          [(ngModel)]="selectedMunicipio"
-          optionLabel="nombre"
-          optionValue="id"
-          placeholder="Seleccione un municipio"
-          [required]="true">
-        </p-dropdown>
-
-      </div>
-    </div>
-  </div>
-  <br>
-  <div class="card-footer d-flex justify-content-end">
-<!--    <button class="btn  d-flex align-self-center"-->
-<!--            style="background-color:  #7138a194; color: white;"-->
-<!--            [disabled]="!vacanteCompleted()"-->
-<!--            (click)="stepper.next()">-->
-<!--      <span class="mr-2 texts">Continuar</span>-->
-<!--      <i style="margin-left: 3%;" class="bi bi-arrow-right-circle-fill texts"></i>-->
-<!--    </button>-->
+<div class="p-card">
+  <div class="flex justify-content-center">
+    <h3>Sigue los pasos para registrarte
+    </h3>
   </div>
 
-</ng-template>
+  <p-steps [activeIndex]="active" [model]="items" class="p-steps"></p-steps>
 
+  <div class="margin card " *ngIf="active === 0">
+    <form [formGroup]="form">
+      <div class="flex justify-content-center">
+        <h3>Datos de la vacante
+        </h3>
+      </div>
+      <div class="w-full mt-2">
 
+        <p-floatLabel [style]="{'width': '100%' }">
+          <p-dropdown
+            id="vacante"
+            [options]="vacantes"
+            [style]="{'width': '100%'}"
+            formControlName="vacante_id"
+            optionValue="id"
+            optionLabel="descripcion"
+            required
+            (onChange)="onVacanteChange($event)">
+          </p-dropdown>
+          <label for="vacante">Vacante</label>
+        </p-floatLabel>
+
+        <div class="w-full flex flex-row gap-5 mt-5">
+          <p-floatLabel [style]="{'width': '49%'}">
+            <p-dropdown
+              id="estado"
+              [options]="estados"
+              [style]="{'width': '100%'}"
+              formControlName="estado_id"
+              optionLabel="nombre"
+              optionValue="id"
+              [required]="true"
+              (onChange)="getMunicipios()">
+            </p-dropdown>
+            <label for="estado">Estado</label>
+          </p-floatLabel>
+
+          <p-floatLabel [style]="{'width': '49%' }">
+            <p-dropdown
+              id="municipio"
+              [options]="municipios"
+              formControlName="municipio_id"
+              [style]="{'width': '100%'}"
+              optionLabel="nombre"
+              optionValue="id"
+              [required]="true">
+            </p-dropdown>
+            <label for="municipio">Municipio</label>
+          </p-floatLabel>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="margin card " *ngIf="active === 1">
+    <form [formGroup]="form">
+      <div class="flex justify-content-center">
+        <h3>Información del solicitante </h3>
+      </div>
+      <div class="w-full mt-2">
+        <div class=" flex flex-row gap-5 mt-5 ">
+          <p-floatLabel [style]="{'width': '32%'}">
+            <input pInputText id="username" [style]="{'width': '100%'}"/>
+            <label for="username">Nombre(s)</label>
+          </p-floatLabel>
+
+          <p-floatLabel [style]="{'width': '32%'}">
+            <input pInputText id="username3" [style]="{'width': '100%'}"/>
+            <label for="username3">Apellido </label>
+          </p-floatLabel>
+
+          <p-floatLabel [style]="{'width': '32%'}">
+            <input pInputText id="username4" [style]="{'width': '100%'}"/>
+            <label for="username4">Apellido Materno</label>
+          </p-floatLabel>
+        </div>
+
+      </div>
+    </form>
+  </div>
+
+  <div class=" flex justify-content-between m-5">
+    <div
+      (click)="active = active > 0 ? active - 1 : active"
+      class="custom-button prev-button"
+      [class.disabled]="active === 0">
+      Prev
+    </div>
+    <div
+      (click)="active = active < 3 ? active + 1 : active"
+      class="custom-button next-button"
+      [class.disabled]="active === 3">
+      Next
+    </div>
+  </div>
+
+</div>
