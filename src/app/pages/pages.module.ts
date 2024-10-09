@@ -4,6 +4,7 @@ import {LoginComponent} from "../share/components/login/login.component";
 import {SidebarComponent} from "../share/components/sidebar/sidebar.component";
 import {UsersComponent} from "./users/users-list/users.component";
 import {authGuard} from "../share/guards/auth.guard";
+import {RegistroComponent} from "./registro/registro.component";
 
 const routes: Routes = [
   {
@@ -32,7 +33,7 @@ const routes: Routes = [
     children: [
       {
         path: 'registro',
-        component: UsersComponent,
+        component: RegistroComponent,
       }
     ]
   },
