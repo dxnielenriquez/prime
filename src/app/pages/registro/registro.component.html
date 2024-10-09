@@ -66,15 +66,16 @@
         <h3>Información del solicitante </h3>
       </div>
 
-      <p-fileUpload
-        mode="basic"
-        chooseLabel="Imagen de perfil"
-        chooseIcon="pi pi-upload"
-        name="demo[]"
-        url="https://www.primefaces.org/cdn/api/upload.php"
-        accept="image/*"
-        maxFileSize="1000000"
-        (onUpload)="onUpload($event)"/>
+      <div class="seccionImg">
+        <span class="title-image">Imagen de perfil</span>
+        <input class="archivos" type="file" #fileInput style="display: none"
+               accept="image/jpeg, image/jpg" (change)="imageSubmitProfile($event)">
+        <img class="image-profile mt-1"
+             [src]="getUrl(imageProfile, imageURLProfile, './assets/images/profile.png') + ((imageProfile)? '': ('?' + code))"
+             alt="" (click)="fileInput.click()">
+        <p>Selecciona o cambia la imagen</p>
+
+      </div>
 
       <div class="w-full mt-2">
         <div class="  inputs gap-5 mt-5 ">

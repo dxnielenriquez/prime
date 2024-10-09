@@ -96,3 +96,29 @@
   align-items: center;
 }
 
+.seccionImg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.title-image {
+  height: 3vh;
+}
+
+.image-profile {
+  cursor: pointer;
+  max-width:100px;
+  max-height:100px;
+  width:auto;
+  height:auto;
+}
+
+@media (max-height: 414px) {
+
+  .image-profile {
+    margin-top: .7rem;
+  }
+}

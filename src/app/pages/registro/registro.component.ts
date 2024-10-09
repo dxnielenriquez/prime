@@ -33,13 +33,10 @@ export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
   active: number = 0;
   vertical = false;
-  aviso: UntypedFormControl | undefined;
-  beneficiarioForm: UntypedFormGroup = new UntypedFormGroup({});
   vacantes = [];
   estados = [];
   estadosOrigen = [];
   estadosBeneficiario = [];
-  splashScreenDialog: any
   query: any;
   maxDate: any;
   sexo = []
@@ -50,6 +47,10 @@ export class RegistroComponent implements OnInit {
   imageURL: any;
   code = '';
   cv: File | null = null;
+  base64textStringProfile: any;
+  imageProfile: any;
+  imageURLProfile: any;
+
 
   columnas = [
     { id: 1, nombre: 'A+' },
@@ -131,10 +132,7 @@ export class RegistroComponent implements OnInit {
       { label: 'Beneficiario'},
       { label: 'Documentación'}
     ];
-
-
   }
-
 
   getEstados() {
     this.registroService.getEstados().subscribe({
@@ -235,6 +233,37 @@ export class RegistroComponent implements OnInit {
     } else {
       this.cv = null;
     }
+  }
+
+  imageSubmitProfile(event: any) {
+    let files = event.target.files;
+    let file = files[0];
+
+    if (!file) return;
+
+    if (file.size > 5000000) {
+      return;
+    }
+
+    if (files && file) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        // this.editImage(true, reader.result)
+      };
+      reader.onload = this.readerLoadedProfile.bind(this);
+      reader.readAsDataURL(file);
+    }
+
+    let tipoArchivos = document.getElementsByClassName('archivos');
+    for (let i = 0; i < tipoArchivos.length; i++) {
+      let inputElement = tipoArchivos[i] as HTMLInputElement;
+      inputElement.value = '';
+    }
+  }
+
+
+  readerLoadedProfile(readerEvt: any) {
+    this.base64textStringProfile = readerEvt.target.result;
   }
 
 }
