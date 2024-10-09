@@ -56,6 +56,43 @@
   }
 }
 
+.inputs{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
 
 
+
+.tamaño{
+  width: 32%;
+}
+
+.tamañotwo{
+  width: 49%;
+}
+
+@media (max-width: 1100px) {
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+
+  .tamaño {
+    width: 100%;
+  }
+
+  .tamañotwo{
+    width: 100%;
+  }
+}
+
+.ineImg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 

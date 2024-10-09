@@ -11,17 +11,20 @@ import {
   UntypedFormGroup,
   Validators
 } from "@angular/forms";
-import {NgIf, NgTemplateOutlet} from "@angular/common";
+import {NgClass, NgIf, NgTemplateOutlet} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
 import {RegistroService} from "./registro.service";
 import {MenuItem} from "primeng/api";
 import {FloatLabelModule} from "primeng/floatlabel";
 import {ChipsModule} from "primeng/chips";
+import {CalendarModule} from "primeng/calendar";
+import {FileUploadModule, UploadEvent} from "primeng/fileupload";
+import {CheckboxModule} from "primeng/checkbox";
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule],
+  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
@@ -43,7 +46,21 @@ export class RegistroComponent implements OnInit {
   estadoCivil = []
   parentescos = []
   municipios = [];
+  image: any;
+  imageURL: any;
+  code = '';
+  cv: File | null = null;
 
+  columnas = [
+    { id: 1, nombre: 'A+' },
+    { id: 2, nombre: 'A-' },
+    { id: 3, nombre: 'B+' },
+    { id: 4, nombre: 'B-' },
+    { id: 5, nombre: 'AB+' },
+    { id: 6, nombre: 'AB-' },
+    { id: 7, nombre: 'O+' },
+    { id: 8, nombre: 'O-' }
+  ];
 
   constructor(
     private fb: UntypedFormBuilder,
@@ -179,5 +196,30 @@ export class RegistroComponent implements OnInit {
   onVacanteChange(event: any): void {
   }
 
+  onUpload(event: UploadEvent) {
+  }
+
+  getUrl(imageProfile: any, imageURLProfile: any, def: any) {
+    return (imageProfile) ? imageProfile : (imageURLProfile) ? imageURLProfile : def;
+  }
+
+  pdfSubmit(event: any) {
+    const fileList: FileList = event.target.files;
+
+    if (fileList.length > 0) {
+      const file: File = fileList[0];
+      const fileSizeInMB: number = file.size / (1024 * 1024);
+
+      if (fileSizeInMB <= 1) {
+        this.cv = file;
+      } else {
+
+        event.target.value = null;
+        this.cv = null;
+      }
+    } else {
+      this.cv = null;
+    }
+  }
 
 }
