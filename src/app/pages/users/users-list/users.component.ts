@@ -21,6 +21,7 @@ import {DropdownModule} from "primeng/dropdown";
 import {DialogService} from "primeng/dynamicdialog";
 import {ModalVisualizarComponent} from "../../../share/components/modals/modal-visualizar/modal-visualizar.component";
 import {Footer} from "../../../share/components/modals/footer";
+import {FooterEditComponent} from "../../../share/components/modals/footer-edit.component";
 
 
 @Component({
@@ -38,7 +39,6 @@ export class UsersComponent implements OnInit {
   searchValue: string | undefined
   filterHidden = true;
   dataSource = ['fecha_registro', 'vacante', 'estado', 'nombre', 'estado_origen', 'clave_ine', 'estatus', 'procesado'];
-  deleted = false;
   estados = [];
   vacantes = [];
 
@@ -84,21 +84,21 @@ export class UsersComponent implements OnInit {
   }
 
   mostrarDetalle(id: number) {
-    let url = 'visualizar-detalle/' + id;
 
     this._userService.showDetalle(id).subscribe(res => {
       this.dialogService.open(ModalVisualizarComponent,
         {
           header: 'Registro',
-          width: '60vw',
-          height: '60vh',
+          width: '75vw',
+          height: '75vh',
           contentStyle: {overflow: 'auto'},
           breakpoints: {
-            '991px': '75vw',
+            '991px': '80vw',
             '640px': '90vw'
           },
+          maximizable: true,
           templates: {
-            footer: Footer
+            footer: FooterEditComponent
           },
           data: res
         })

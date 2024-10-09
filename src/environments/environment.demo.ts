@@ -5,6 +5,7 @@ export const environment = {
     api :  {
       baseUrl : '/v1/api',
       authTokenName: '__token__',
+      PW: 'VN0xsssDZcXlXA2FNBgl5TWHtmZkDCau',
       storageUrl : '/storage'
     },
     local: {

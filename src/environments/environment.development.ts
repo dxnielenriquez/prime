@@ -5,6 +5,7 @@ export const environment = {
     baseUrl: 'http://10.112.32.164:8028/api/web',
     authTokenName: '__token__',
     storageUrl: 'http://10.112.32.164:8028/storage/',
+    PW: 'VN0xsssDZcXlXA2FNBgl5TWHtmZkDCau',
   },
   local: {
     baseUrl: 'http://localhost/v1/api',

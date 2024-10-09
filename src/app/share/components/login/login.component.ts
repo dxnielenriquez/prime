@@ -27,8 +27,8 @@ export class LoginComponent implements OnInit {
       this.router.navigate(["/administracion/listado-registros"]).then();
     }
     this.loginForm = this.fb.group({
-      email: ['user@iemail.com', [Validators.required, Validators.email]],
-      password: ['secret', [Validators.required]],
+      email: ['reclutamiento@informaticaelectoral.com', [Validators.required, Validators.email]],
+      password: ['J355IC4C0V4RRUBI05**', [Validators.required]],
     });
   }
 
