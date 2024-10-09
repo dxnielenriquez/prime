@@ -11,7 +11,6 @@ export class RegistroService {
     private _http: HttpClient,
   ) { }
 
-
   public getFecha(): Observable<any> {
     return this._http.get('fecha' , {
       headers: {noWeb: 'true'}
@@ -47,6 +46,5 @@ export class RegistroService {
       headers: {noWeb: 'true'}
     })
   }
-
 
 }

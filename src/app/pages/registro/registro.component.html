@@ -7,7 +7,7 @@
   <p-steps [activeIndex]="active" [model]="items" class="p-steps"></p-steps>
 
   <div class="margin card " *ngIf="active === 0">
-    <form [formGroup]="form">
+    <form [formGroup]="form['controls'].vacantes">
       <div class="flex justify-content-center">
         <h3>Datos de la vacante
         </h3>
@@ -61,7 +61,7 @@
   </div>
 
   <div class="margin card " *ngIf="active === 1">
-    <form [formGroup]="form">
+    <form [formGroup]="form['controls'].solicitante">
       <div class="flex justify-content-center">
         <h3>Información del solicitante </h3>
       </div>
@@ -187,7 +187,7 @@
   </div>
 
   <div class="margin card " *ngIf="active === 2">
-    <form [formGroup]="form">
+    <form [formGroup]="form['controls'].beneficiario">
       <div class="flex justify-content-center">
         <h3>Información del beneficiario </h3>
       </div>
@@ -231,7 +231,7 @@
 
           <p-floatLabel class="tamañotwo">
             <input pInputText id="rfc" [style]="{'width': '100%'}"/>
-            <label for="rfc">Celular </label>
+            <label for="rfc">RFC </label>
           </p-floatLabel>
         </div>
 
@@ -290,7 +290,7 @@
   </div>
 
   <div class="margin card " *ngIf="active === 3">
-    <form [formGroup]="form">
+    <form [formGroup]="form['controls'].documentacion">
       <div class="flex justify-content-center">
         <h3>Documentación requerida </h3>
       </div>

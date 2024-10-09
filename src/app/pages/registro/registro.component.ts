@@ -4,6 +4,7 @@ import {StepsModule} from "primeng/steps";
 import {Button} from "primeng/button";
 import {MatStep, MatStepper} from "@angular/material/stepper";
 import {
+  FormBuilder, FormGroup,
   FormsModule,
   ReactiveFormsModule,
   UntypedFormBuilder,
@@ -32,7 +33,6 @@ export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
   active: number = 0;
   vertical = false;
-  form: UntypedFormGroup = new UntypedFormGroup({});
   aviso: UntypedFormControl | undefined;
   beneficiarioForm: UntypedFormGroup = new UntypedFormGroup({});
   vacantes = [];
@@ -62,9 +62,60 @@ export class RegistroComponent implements OnInit {
     { id: 8, nombre: 'O-' }
   ];
 
+  form = this._formBuilder.group({
+    vacantes: this._formBuilder.group({
+      vacante_id: ['', Validators.required],
+      estado_id: ['', Validators.required],
+      municipio_id: [{value: '', disabled: true}, Validators.required],
+    }),
+    solicitante: this._formBuilder.group({
+      nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      sexo_id: ['', Validators.required],
+      tipo_sangre_id: ['', Validators.required],
+      estado_civil_id: ['', Validators.required],
+      fecha_nacimiento: ['', [Validators.required]],
+      calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
+      numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
+      colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
+      correo: ['', [Validators.required, Validators.email]],
+      telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+
+    }),
+    beneficiario: this._formBuilder.group({
+      nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+      parentesco_id: ['', Validators.required],
+      rfc: ['', [Validators.required, Validators.minLength(13)]],
+      calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]],
+      numero_int: ['', [Validators.minLength(1), Validators.maxLength(5)]],
+      colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
+      codigo_postal: ['', [ Validators.minLength(5)]],
+      estado_id: ['', Validators.required],
+      municipio_id: [{value: '', disabled: true}, Validators.required],
+
+    }),
+    documentacion: this._formBuilder.group({
+      clave_ine: ['', [Validators.required, Validators.minLength(18), Validators.maxLength(18)]],
+      curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18)]],
+      rfc: ['', [Validators.required, Validators.minLength(12)]],
+      nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
+      cv: ['', ]
+
+    }),
+  });
+
+
   constructor(
     private fb: UntypedFormBuilder,
-    private registroService: RegistroService
+    private registroService: RegistroService,
+    private _formBuilder: FormBuilder,
+
   ) {
     this.getDateTime()
     this.getEstados();
@@ -81,89 +132,53 @@ export class RegistroComponent implements OnInit {
       { label: 'Documentación'}
     ];
 
-    this.crearFormulario();
 
   }
 
-  crearFormulario() {
-    this.aviso = new UntypedFormControl(false, Validators.required);
-    this.form = this.fb.group({
-      vacante_id: ['', Validators.required],
-      estado_id: ['', Validators.required],
-      municipio_id: [{value: '', disabled: true}, Validators.required],
-      nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      estado_origen_id: ['', Validators.required],
-      municipio_origen_id: ['', Validators.required],
-      estado_civil_id: ['', Validators.required],
-      sexo_id: ['', Validators.required],
-      tipo_sangre_id: ['', Validators.required],
-      telefono: ['', [Validators.required,  Validators.minLength(10), Validators.maxLength(10)]],
-      correo: ['', [Validators.required, Validators.email]],
-      calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5),  Validators.pattern(/^([0-9])*$/)]],
-      numero_int: ['', [ Validators.minLength(1), Validators.maxLength(5),  Validators.pattern(/^([0-9])*$/)]],
-      colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      codigo_postal: ['', [ Validators.minLength(5),  Validators.pattern(/^([0-9])*$/)]],
-      fecha_nacimiento: ['', [Validators.required]],
-      rfc: ['', [Validators.required, Validators.minLength(12)]],
-      curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18),]],
-      nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11), ]],
-      clave_ine: ['', [Validators.required, Validators.minLength(18), Validators.maxLength(18),]],
-      cv: ['', ]
-      // foto: ['', [Validators.required]]
-    });
-
-    this.beneficiarioForm = this.fb.group({
-      estado_id: ['', Validators.required],
-      municipio_id: [{value: '', disabled: true}, Validators.required],
-      nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128),  Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      telefono: ['', [Validators.required,  Validators.minLength(10), Validators.maxLength(10)]],
-      parentesco_id: ['', Validators.required],
-      rfc: ['', [Validators.required, Validators.minLength(13)]],
-      calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), ]],
-      numero_int: ['', [ Validators.minLength(1), Validators.maxLength(5), ]],
-      colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), ]],
-      codigo_postal: ['', [ Validators.minLength(5)]],
-    });
-  }
 
   getEstados() {
-    this.registroService.getEstados().subscribe((res) => {
-      this.estados = res.estados;
-      this.vacantes = res.vacantes;
-      this.estadosOrigen = res.estados_origen;
-      this.estadosBeneficiario = res.estados_origen;
-      this.splashScreenDialog.close();
+    this.registroService.getEstados().subscribe({
+      next: (res) => {
+        this.estados = res.estados;
+        this.vacantes = res.vacantes;
+        this.estadosOrigen = res.estados_origen;
+        this.estadosBeneficiario = res.estados_origen;
 
-      if (this.query.estado || this.query.vacante) {
-        let estado = this.query.estado;
-        let vacante = this.query.vacante;
+        if (this.query && (this.query.estado || this.query.vacante)) {
+          let estado = this.query.estado;
+          let vacante = this.query.vacante;
 
-        let controls = this.form.controls;
-        controls['estado_id'].setValue(Number.parseInt(estado));
-        controls['vacante_id'].setValue(Number.parseInt(vacante));
-        this.getMunicipios();
+          let controls = this.form.controls['vacantes'] as FormGroup;
+
+          if (estado) {
+            controls.controls['estado_id'].setValue(Number.parseInt(estado));
+          }
+
+          if (vacante) {
+            controls.controls['vacante_id'].setValue(Number.parseInt(vacante));
+          }
+
+          this.getMunicipios();
+        }
+      },
+      error: (err) => {
+        console.error(err);
       }
-
-    }, () => {
-      this.splashScreenDialog.close();
     });
   }
 
   getMunicipios() {
-    let values = this.form.value;
-    let municipio = this.form.get('municipio_id');
-    municipio!.disable();
-    this.registroService.getMunicipios(values.estado_id).subscribe(res => {
-      this.municipios = res;
-      municipio!.enable();
-      municipio!.reset();
-    });
+    let estadoId = this.form.get('vacantes.estado_id')?.value;
+    let municipio = this.form.get('vacantes.municipio_id');
+
+    if (estadoId) {
+      municipio!.disable();
+      this.registroService.getMunicipios(estadoId).subscribe(res => {
+        this.municipios = res;
+        municipio!.enable();
+        municipio!.reset();
+      });
+    }
   }
 
   getDateTime() {
