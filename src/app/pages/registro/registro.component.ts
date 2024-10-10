@@ -14,6 +14,7 @@ import {CalendarModule} from "primeng/calendar";
 import {FileUploadModule} from "primeng/fileupload";
 import {CheckboxModule} from "primeng/checkbox";
 import {ActivatedRoute, Router} from "@angular/router";
+import {environment} from "../../../environments/environment.development";
 
 @Component({
   selector: 'app-registro',
@@ -49,6 +50,7 @@ export class RegistroComponent implements OnInit {
   selectedImage: string | ArrayBuffer | null = null;
   base64textString: any;
   nuevoRegistro = false;
+  storage = environment.api.storageUrl
   // selectedImage: any;
   selectedIneImage: string | ArrayBuffer | null = null;
   columnas = [
@@ -346,7 +348,7 @@ export class RegistroComponent implements OnInit {
     if (this.form.controls.beneficiario.get('usarDomicilio')!.value) {
       const solicitanteControls = this.form.controls.solicitante.controls;
       const beneficiarioControls = this.form.controls.beneficiario.controls;
-
+this.municipiosBeneficiario = this.municipiosSolicitante;
       beneficiarioControls.calle.setValue(solicitanteControls.calle.value);
       beneficiarioControls.numero_ext.setValue(solicitanteControls.numero_ext.value);
       beneficiarioControls.numero_int.setValue(solicitanteControls.numero_int.value);
@@ -377,6 +379,11 @@ export class RegistroComponent implements OnInit {
     this.base64textString = '';
     this.base64textStringProfile = '';
   }
+
+  verAviso() {
+    window.open(this.storage + 'aviso_de_privacidad.pdf', '_blank');
+  }
+
 
   guardarRegistro(registro: any) {
     const formData = new FormData();
