@@ -44,10 +44,9 @@ export class RegistroComponent implements OnInit {
   imageProfile: any;
   imageURLProfile: any;
   selectedImage: string | ArrayBuffer | null = null;
-  mismoDomicilio = false
-  municipiosBeneficiario = [];
-  municipiosOrigen = [];
-
+  base64textString: any;
+  // selectedImage: any;
+  selectedIneImage: any; // Para la imagen de la INE
   columnas = [
     {id: 1, nombre: 'A+'},
     {id: 2, nombre: 'A-'},
@@ -230,6 +229,11 @@ export class RegistroComponent implements OnInit {
     }
   }
 
+
+  readerLoadedProfile(readerEvt: any) {
+    this.base64textStringProfile = readerEvt.target.result;
+  }
+
   imageSubmitProfile(event: any) {
     let files = event.target.files;
     let file = files[0];
@@ -260,10 +264,38 @@ export class RegistroComponent implements OnInit {
     console.log(archivoInput);
   }
 
-  readerLoadedProfile(readerEvt: any) {
-    this.base64textStringProfile = readerEvt.target.result;
-  }
+  imageSubmit(event: any) {
+    let files = event.target.files;
+    let file = files[0];
 
+    if (!file) return;
+
+    if (file.size > 5000000) {
+      console.log('error');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Alto',
+        detail: 'Imagen demasiado grande.'
+      });
+      return;
+    }
+
+    if (files && file) {
+      let reader = new FileReader();
+      reader.onloadend = () => {
+        this.selectedIneImage = reader.result;
+      };
+      reader.onload = this.readerLoaded.bind(this);
+      reader.readAsDataURL(file);
+    }
+
+    let archivoInput = event.target as HTMLInputElement;
+    archivoInput.value = ''; // Limpiar el input de archivo
+    console.log(archivoInput);
+  }
+  readerLoaded(readerEvt: any) {
+    this.base64textString = readerEvt.target.result;
+  }
 
   onSubmit() {
 
