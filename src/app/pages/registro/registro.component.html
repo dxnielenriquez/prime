@@ -186,7 +186,7 @@
               formControlName="estado_id"
               optionValue="id"
               [required]="true"
-              (onChange)="getMunicipios()">
+              (onChange)="getMunicipiosSolicitante()">
             </p-dropdown>
             <label for="estadoSolicitante">Estado</label>
           </p-floatLabel>
@@ -195,17 +195,14 @@
             <p-dropdown
               id="municipioSolicitante"
               [options]="municipios"
+              formControlName="municipio_id"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
-              formControlName="municipio_id"
               optionValue="id"
-              [required]="true"
-              (onChange)="getMunicipios()">
+              [required]="true">
             </p-dropdown>
             <label for="municipioSolicitante">Municipio</label>
           </p-floatLabel>
-
-
         </div>
 
         <div class="  inputs gap-5 mt-5 ">
@@ -218,9 +215,7 @@
             <input pInputText id="celular" formControlName="telefono" class="w-full"/>
             <label for="celular">Celular </label>
           </p-floatLabel>
-
         </div>
-
       </div>
     </form>
   </div>
@@ -302,7 +297,7 @@
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="coloniaBeneficiario"formControlName="colonia" class="w-full"/>
+            <input pInputText id="coloniaBeneficiario" formControlName="colonia" class="w-full"/>
             <label for="coloniaBeneficiario">Colonia</label>
           </p-floatLabel>
         </div>
@@ -322,7 +317,7 @@
               formControlName="estado_id"
               optionValue="id"
               [required]="true"
-              (onChange)="getMunicipios()">
+              (onChange)="getMunicipiosBeneficiario()">
             </p-dropdown>
             <label for="estadoBeneficiario">Estado</label>
           </p-floatLabel>
@@ -336,7 +331,7 @@
               formControlName="municipio_id"
               optionValue="id"
               [required]="true"
-              (onChange)="getMunicipios()">
+              >
             </p-dropdown>
             <label for="municipioBeneficiario">Municipio</label>
           </p-floatLabel>
@@ -403,25 +398,25 @@
     </form>
   </div>
 
-  <div class=" flex justify-content-between m-5">
-
-    <div
-      (click)="onSubmit()"
-      class="custom-button submit-button">
-      Submit
-    </div>
+  <div class="flex justify-content-between m-5">
 
     <div
       (click)="active = active > 0 ? active - 1 : active"
       class="custom-button prev-button"
-      [class.disabled]="active === 0">
+      [class.disabled]="active === 0"
+      style="margin-right: auto;">
       Regresar
     </div>
-    <div
-      (click)="active = active < 3 ? active + 1 : active"
-      class="custom-button next-button"
-      [class.disabled]="active === 3">
-      Continuar
+
+    <div class="custom-button next-button" style="margin-left: auto;">
+      <div *ngIf="active === 3; else nextButton" (click)="onSubmit()" class="submit-button">
+        Registrarse
+      </div>
+      <ng-template #nextButton>
+        <div (click)="active = active < 3 ? active + 1 : active">
+          Continuar
+        </div>
+      </ng-template>
     </div>
   </div>
 

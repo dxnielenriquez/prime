@@ -28,6 +28,8 @@ export class RegistroComponent implements OnInit {
   vertical = false;
   vacantes = [];
   estados = [];
+  municipios = [];
+  municipiosSolicitante: any[] = [];
   estadosOrigen = [];
   estadosBeneficiario = [];
   query: any;
@@ -35,7 +37,6 @@ export class RegistroComponent implements OnInit {
   sexo = []
   estadoCivil = []
   parentescos = []
-  municipios = [];
   image: any;
   imageURL: any;
   code = '';
@@ -46,7 +47,7 @@ export class RegistroComponent implements OnInit {
   selectedImage: string | ArrayBuffer | null = null;
   base64textString: any;
   // selectedImage: any;
-  selectedIneImage: any; // Para la imagen de la INE
+  selectedIneImage: string | ArrayBuffer | null = null;
   columnas = [
     {id: 1, nombre: 'A+'},
     {id: 2, nombre: 'A-'},
@@ -115,11 +116,13 @@ export class RegistroComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private messageService: MessageService
   ) {
-    this.getDateTime()
+    this.getDateTime();
     this.getEstados();
     this.getSexo();
     this.getEstadoCivil();
     this.getParentesco();
+    this.getMunicipiosSolicitante();
+    this.getMunicipiosBeneficiario();
   }
 
   ngOnInit() {
@@ -136,8 +139,6 @@ export class RegistroComponent implements OnInit {
       next: (res) => {
         this.estados = res.estados;
         this.vacantes = res.vacantes;
-        this.estadosOrigen = res.estados_origen;
-        this.estadosBeneficiario = res.estados_origen;
 
         if (this.query && (this.query.estado || this.query.vacante)) {
           let estado = this.query.estado;
@@ -163,11 +164,10 @@ export class RegistroComponent implements OnInit {
   }
 
   getMunicipios() {
-    let estadoId = this.form.get('vacantes.estado_id')?.value;
-    let municipio = this.form.get('vacantes.municipio_id');
+    let estadoId = this.form.get(`vacantes.estado_id`)?.value;
+    let municipio = this.form.get(`vacantes.municipio_id`);
 
     if (estadoId) {
-      municipio!.disable();
       this.registroService.getMunicipios(estadoId).subscribe(res => {
         this.municipios = res;
         municipio!.enable();
@@ -175,6 +175,40 @@ export class RegistroComponent implements OnInit {
       });
     }
   }
+
+  getMunicipiosSolicitante() {
+    let estadoIdSolicitante = this.form.get(`solicitante.estado_id`)?.value;
+    let municipioSolicitante = this.form.get(`solicitante.municipio_id`);
+
+    if (!estadoIdSolicitante) {
+      municipioSolicitante?.disable();
+      municipioSolicitante?.reset();
+      return;
+    }
+
+    this.registroService.getMunicipios(estadoIdSolicitante).subscribe(res => {
+      this.municipiosSolicitante = res;
+      municipioSolicitante!.enable();
+      municipioSolicitante!.reset();
+    });
+  }
+  getMunicipiosBeneficiario() {
+    let estadoIdSolicitante = this.form.get(`solicitante.estado_id`)?.value;
+    let municipioSolicitante = this.form.get(`solicitante.municipio_id`);
+
+    if (!estadoIdSolicitante) {
+      municipioSolicitante?.disable();
+      municipioSolicitante?.reset();
+      return;
+    }
+
+    this.registroService.getMunicipios(estadoIdSolicitante).subscribe(res => {
+      this.municipiosSolicitante = res;
+      municipioSolicitante!.enable();
+      municipioSolicitante!.reset();
+    });
+  }
+
 
   getDateTime() {
     this.registroService.getFecha().subscribe(res => {
@@ -204,6 +238,7 @@ export class RegistroComponent implements OnInit {
   }
 
   onVacanteChange(event: any): void {
+
   }
 
   getUrl(imageProfile: any, imageURLProfile: any, def: any) {
@@ -290,7 +325,7 @@ export class RegistroComponent implements OnInit {
     }
 
     let archivoInput = event.target as HTMLInputElement;
-    archivoInput.value = ''; // Limpiar el input de archivo
+    archivoInput.value = '';
     console.log(archivoInput);
   }
   readerLoaded(readerEvt: any) {
@@ -305,6 +340,5 @@ export class RegistroComponent implements OnInit {
     }
 
   }
-
 
 }
