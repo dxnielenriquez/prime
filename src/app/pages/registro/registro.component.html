@@ -69,28 +69,28 @@
       <div class="seccionImg">
         <span class="title-image">Imagen de perfil</span>
         <input class="archivos" type="file" #fileInput style="display: none"
-               accept="image/jpeg, image/jpg" (change)="imageSubmitProfile($event)">
+               accept="image/jpeg, image/jpg, image/png" (change)="imageSubmitProfile($event)">
         <img class="image-profile mt-1"
-             [src]="getUrl(imageProfile, imageURLProfile, './assets/images/profile.png') + ((imageProfile)? '': ('?' + code))"
+             [src]="selectedImage || getUrl(imageProfile, imageURLProfile, './assets/images/profile.png') + ((imageProfile)? '': ('?' + code))"
              alt="" (click)="fileInput.click()">
         <p>Selecciona o cambia la imagen</p>
-
       </div>
+
 
       <div class="w-full mt-2">
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamaño">
-            <input pInputText id="username" [style]="{'width': '100%'}"/>
-            <label for="username">Nombre(s)</label>
+            <input pInputText id="nombre" formControlName="nombre" [style]="{'width': '100%'}"/>
+            <label for="nombre">Nombre(s)</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="username3" [style]="{'width': '100%'}"/>
-            <label for="username3">Apellido </label>
+            <input pInputText id="apellido" formControlName="apellido_paterno" [style]="{'width': '100%'}"/>
+            <label for="apellido">Apellido Paterno</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="username4" [style]="{'width': '100%'}"/>
+            <input pInputText id="username4" formControlName="apellido_materno" [style]="{'width': '100%'}"/>
             <label for="username4">Apellido Materno</label>
           </p-floatLabel>
         </div>
@@ -150,34 +150,72 @@
 
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamaño">
-            <input pInputText id="calle" [style]="{'width': '100%'}"/>
+            <input pInputText id="calle" formControlName="calle" [style]="{'width': '100%'}"/>
             <label for="calle">Calle</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="numExterior" [style]="{'width': '100%'}"/>
+            <input pInputText id="numExterior" formControlName="numero_ext" [style]="{'width': '100%'}"/>
             <label for="numExterior">Número exterior </label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="numInterior" [style]="{'width': '100%'}"/>
+            <input pInputText id="numInterior" formControlName="numero_int" [style]="{'width': '100%'}"/>
             <label for="numInterior">Número interior</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="colonia" [style]="{'width': '100%'}"/>
+            <input pInputText id="colonia" formControlName="colonia" [style]="{'width': '100%'}"/>
             <label for="colonia">Colonia</label>
           </p-floatLabel>
         </div>
 
+        <div class="w-full inputs gap-5 mt-5">
+
+          <p-floatLabel class="tamañotwo">
+            <input pInputText id="cpSolicitante" formControlName="codigo_postal" [style]="{'width': '100%'}"/>
+            <label for="cpSolicitante">Código postal </label>
+          </p-floatLabel>
+
+          <p-floatLabel class="tamañotwo">
+            <p-dropdown
+              id="estadoSolicitante"
+              [options]="estados"
+              [style]="{'width': '100%'}"
+              optionLabel="nombre"
+              formControlName="estado_id"
+              optionValue="id"
+              [required]="true"
+              (onChange)="getMunicipios()">
+            </p-dropdown>
+            <label for="estadoSolicitante">Estado</label>
+          </p-floatLabel>
+
+          <p-floatLabel class="tamañotwo">
+            <p-dropdown
+              id="municipioSolicitante"
+              [options]="municipios"
+              [style]="{'width': '100%'}"
+              optionLabel="nombre"
+              formControlName="municipio_id"
+              optionValue="id"
+              [required]="true"
+              (onChange)="getMunicipios()">
+            </p-dropdown>
+            <label for="municipioSolicitante">Municipio</label>
+          </p-floatLabel>
+
+
+        </div>
+
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamañotwo">
-            <input pInputText id="email" [style]="{'width': '100%'}"/>
+            <input pInputText id="email" formControlName="correo" [style]="{'width': '100%'}"/>
             <label for="email">Correo</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamañotwo">
-            <input pInputText id="celular" [style]="{'width': '100%'}"/>
+            <input pInputText id="celular" formControlName="telefono" [style]="{'width': '100%'}"/>
             <label for="celular">Celular </label>
           </p-floatLabel>
 
@@ -196,22 +234,22 @@
       <div class="w-full mt-2">
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamaño">
-            <input pInputText id="nombreBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="nombreBeneficiario" formControlName="nombre" class="w-full"/>
             <label for="nombreBeneficiario">Nombre(s) beneficiario</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="paternoBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="paternoBeneficiario" formControlName="apellido_paterno" class="w-full"/>
             <label for="paternoBeneficiario">Apellido Paterno </label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="maternoBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="maternoBeneficiario" formControlName="apellido_materno" class="w-full"/>
             <label for="maternoBeneficiario">Apellido Materno</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="celularBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="celularBeneficiario" formControlName="telefono" class="w-full"/>
             <label for="celularBeneficiario">Celular beneficiario</label>
           </p-floatLabel>
         </div>
@@ -222,6 +260,7 @@
               id="parentesco"
               [options]="parentescos"
               [style]="{'width': '100%'}"
+              formControlName="parentesco_id"
               optionLabel="nombre"
               optionValue="id"
               [required]="true"
@@ -231,7 +270,7 @@
           </p-floatLabel>
 
           <p-floatLabel class="tamañotwo">
-            <input pInputText id="rfc" [style]="{'width': '100%'}"/>
+            <input pInputText id="rfc" formControlName="rfc" [style]="{'width': '100%'}"/>
             <label for="rfc">RFC </label>
           </p-floatLabel>
         </div>
@@ -248,39 +287,39 @@
 
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamaño">
-            <input pInputText id="calleBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="calleBeneficiario" formControlName="calle" [style]="{'width': '100%'}"/>
             <label for="nombreBeneficiario">Calle</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="exteriorBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="exteriorBeneficiario" formControlName="numero_ext" [style]="{'width': '100%'}"/>
             <label for="paternoBeneficiario">Número exterior </label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="interiorBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="interiorBeneficiario" formControlName="numero_int" [style]="{'width': '100%'}"/>
             <label for="maternoBeneficiario">Número interior</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="coloniaBeneficiario" [style]="{'width': '100%'}"/>
-            <label for="celularBeneficiario">Colonia</label>
+            <input pInputText id="coloniaBeneficiario"formControlName="colonia" [style]="{'width': '100%'}"/>
+            <label for="coloniaBeneficiario">Colonia</label>
           </p-floatLabel>
         </div>
 
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamaño">
-            <input pInputText id="cpBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="cpBeneficiario" formControlName="codigo_postal" [style]="{'width': '100%'}"/>
             <label for="cpBeneficiario">Código postal</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="postalBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="postalBeneficiario" formControlName="estado_id" [style]="{'width': '100%'}"/>
             <label for="postalBeneficiario">Estado</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="estadoBeneficiario" [style]="{'width': '100%'}"/>
+            <input pInputText id="estadoBeneficiario" formControlName="municipio_id" [style]="{'width': '100%'}"/>
             <label for="estadoBeneficiario">Municipio</label>
           </p-floatLabel>
 
@@ -300,7 +339,7 @@
       <div class="ineImg">
         <span class="title-image">Imagen de la INE (Lado frontal)</span>
         <input class="archivos" type="file" #imageIne style="display: none"
-               accept="image/jpeg, image/jpg" >
+               accept="image/jpeg, image/jpg, image/png" >
 
         <img width="10%" [ngClass]="image ? 'image-ine':'image-profile'"
              [src]="getUrl(image, imageURL, './assets/images/img.png') + ((image)? '': ('?' + code))"
@@ -324,22 +363,22 @@
       <div class="w-full mt-2">
         <div class="  inputs gap-5 mt-5 ">
           <p-floatLabel class="tamaño">
-            <input pInputText id="claveElector" [style]="{'width': '100%'}"/>
+            <input pInputText id="claveElector" formControlName="clave_ine" [style]="{'width': '100%'}"/>
             <label for="claveElector">Clave de elector</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="curp" [style]="{'width': '100%'}"/>
+            <input pInputText id="curp" formControlName="curp" [style]="{'width': '100%'}"/>
             <label for="curp">CURP</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="rfcfinal" [style]="{'width': '100%'}"/>
+            <input pInputText id="rfcfinal" formControlName="rfc" [style]="{'width': '100%'}"/>
             <label for="rfcfinal">RFC</label>
           </p-floatLabel>
 
           <p-floatLabel class="tamaño">
-            <input pInputText id="numSeguro" [style]="{'width': '100%'}"/>
+            <input pInputText id="numSeguro" formControlName="nss" [style]="{'width': '100%'}"/>
             <label for="numSeguro">Número de seguro social</label>
           </p-floatLabel>
         </div>
@@ -349,17 +388,24 @@
   </div>
 
   <div class=" flex justify-content-between m-5">
+
+    <div
+      (click)="onSubmit()"
+      class="custom-button submit-button">
+      Submit
+    </div>
+
     <div
       (click)="active = active > 0 ? active - 1 : active"
       class="custom-button prev-button"
       [class.disabled]="active === 0">
-      Prev
+      Regresar
     </div>
     <div
       (click)="active = active < 3 ? active + 1 : active"
       class="custom-button next-button"
       [class.disabled]="active === 3">
-      Next
+      Continuar
     </div>
   </div>
 

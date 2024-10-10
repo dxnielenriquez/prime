@@ -1,21 +1,13 @@
-import {Component, OnInit, } from '@angular/core';
+import {Component, OnInit,} from '@angular/core';
 import {ToastModule} from "primeng/toast";
 import {StepsModule} from "primeng/steps";
 import {Button} from "primeng/button";
 import {MatStep, MatStepper} from "@angular/material/stepper";
-import {
-  FormBuilder, FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-  Validators
-} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgIf, NgTemplateOutlet} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
 import {RegistroService} from "./registro.service";
-import {MenuItem} from "primeng/api";
+import {MenuItem, MessageService} from "primeng/api";
 import {FloatLabelModule} from "primeng/floatlabel";
 import {ChipsModule} from "primeng/chips";
 import {CalendarModule} from "primeng/calendar";
@@ -25,6 +17,7 @@ import {CheckboxModule} from "primeng/checkbox";
 @Component({
   selector: 'app-registro',
   standalone: true,
+  providers: [MessageService],
   imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
@@ -50,17 +43,20 @@ export class RegistroComponent implements OnInit {
   base64textStringProfile: any;
   imageProfile: any;
   imageURLProfile: any;
-
+  selectedImage: string | ArrayBuffer | null = null;
+  mismoDomicilio = false
+  municipiosBeneficiario = [];
+  municipiosOrigen = [];
 
   columnas = [
-    { id: 1, nombre: 'A+' },
-    { id: 2, nombre: 'A-' },
-    { id: 3, nombre: 'B+' },
-    { id: 4, nombre: 'B-' },
-    { id: 5, nombre: 'AB+' },
-    { id: 6, nombre: 'AB-' },
-    { id: 7, nombre: 'O+' },
-    { id: 8, nombre: 'O-' }
+    {id: 1, nombre: 'A+'},
+    {id: 2, nombre: 'A-'},
+    {id: 3, nombre: 'B+'},
+    {id: 4, nombre: 'B-'},
+    {id: 5, nombre: 'AB+'},
+    {id: 6, nombre: 'AB-'},
+    {id: 7, nombre: 'O+'},
+    {id: 8, nombre: 'O-'}
   ];
 
   form = this._formBuilder.group({
@@ -72,7 +68,7 @@ export class RegistroComponent implements OnInit {
     solicitante: this._formBuilder.group({
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      apellido_materno: ['', [Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       sexo_id: ['', Validators.required],
       tipo_sangre_id: ['', Validators.required],
       estado_civil_id: ['', Validators.required],
@@ -81,6 +77,9 @@ export class RegistroComponent implements OnInit {
       numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
+      codigo_postal: ['', [Validators.minLength(5),  Validators.pattern(/^([0-9])*$/)]],
+      estado_id: ['', Validators.required],
+      municipio_id: [{value: '', disabled: true}, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
 
@@ -88,7 +87,7 @@ export class RegistroComponent implements OnInit {
     beneficiario: this._formBuilder.group({
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       apellido_paterno: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
-      apellido_materno: ['', [ Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
+      apellido_materno: ['', [Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
       parentesco_id: ['', Validators.required],
       rfc: ['', [Validators.required, Validators.minLength(13)]],
@@ -96,7 +95,7 @@ export class RegistroComponent implements OnInit {
       numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      codigo_postal: ['', [ Validators.minLength(5)]],
+      codigo_postal: ['', [Validators.minLength(5)]],
       estado_id: ['', Validators.required],
       municipio_id: [{value: '', disabled: true}, Validators.required],
 
@@ -106,17 +105,16 @@ export class RegistroComponent implements OnInit {
       curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18)]],
       rfc: ['', [Validators.required, Validators.minLength(12)]],
       nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-      cv: ['', ]
+      cv: ['',]
 
     }),
   });
 
 
   constructor(
-    private fb: UntypedFormBuilder,
     private registroService: RegistroService,
     private _formBuilder: FormBuilder,
-
+    private messageService: MessageService
   ) {
     this.getDateTime()
     this.getEstados();
@@ -127,10 +125,10 @@ export class RegistroComponent implements OnInit {
 
   ngOnInit() {
     this.items = [
-      {  label: 'Vacantes'},
-      { label: 'Solicitante'},
-      { label: 'Beneficiario'},
-      { label: 'Documentación'}
+      {label: 'Vacantes'},
+      {label: 'Solicitante'},
+      {label: 'Beneficiario'},
+      {label: 'Documentación'}
     ];
   }
 
@@ -209,9 +207,6 @@ export class RegistroComponent implements OnInit {
   onVacanteChange(event: any): void {
   }
 
-  onUpload(event: UploadEvent) {
-  }
-
   getUrl(imageProfile: any, imageURLProfile: any, def: any) {
     return (imageProfile) ? imageProfile : (imageURLProfile) ? imageURLProfile : def;
   }
@@ -242,28 +237,42 @@ export class RegistroComponent implements OnInit {
     if (!file) return;
 
     if (file.size > 5000000) {
+      console.log('error');
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Alto',
+        detail: 'Imagen demasiado grande.'
+      });
       return;
     }
 
     if (files && file) {
       let reader = new FileReader();
       reader.onloadend = () => {
-        // this.editImage(true, reader.result)
+        this.selectedImage = reader.result;
       };
       reader.onload = this.readerLoadedProfile.bind(this);
       reader.readAsDataURL(file);
     }
 
-    let tipoArchivos = document.getElementsByClassName('archivos');
-    for (let i = 0; i < tipoArchivos.length; i++) {
-      let inputElement = tipoArchivos[i] as HTMLInputElement;
-      inputElement.value = '';
-    }
+    let archivoInput = event.target as HTMLInputElement;
+    archivoInput.value = '';
+    console.log(archivoInput);
   }
-
 
   readerLoadedProfile(readerEvt: any) {
     this.base64textStringProfile = readerEvt.target.result;
   }
+
+
+  onSubmit() {
+
+    let controls = this.form['controls']
+    if (controls) {
+      console.log(controls);
+    }
+
+  }
+
 
 }
