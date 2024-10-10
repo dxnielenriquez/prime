@@ -8,6 +8,7 @@ import {tokenInterceptor} from "./share/interceptor/token.interceptor";
 import {errorInterceptor} from "./share/interceptor/error.interceptor";
 import {DialogService} from "primeng/dynamicdialog";
 import {NgxPermissionsModule} from "ngx-permissions";
+import {ConfirmationService, MessageService} from "primeng/api";
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,6 +18,6 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([baseUrlInterceptor, tokenInterceptor, errorInterceptor]),
     ),
     importProvidersFrom(NgxPermissionsModule.forRoot()),
-    DialogService
+    DialogService, MessageService, ConfirmationService
   ]
 }

@@ -1,0 +1,22 @@
+.item1 {
+  grid-area: foto;
+}
+
+.container {
+  display: grid;
+  grid-template-areas:
+    'foto';
+  gap: 10px;
+  padding: 10px;
+}
+
+.layout-footer {
+  background: var(--surface-card);
+  height: 3rem;
+  border-top: 1px solid var(--surface-border);
+  border-bottom: 1px solid var(--surface-border);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

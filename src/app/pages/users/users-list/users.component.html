@@ -1,6 +1,6 @@
 <div class="surface-card shadow-2 border-round ">
   <div class="header flex justify-content-between align-items-center">
-    <span class="header-title">Usuarios</span>
+    <span class="header-title">Listado de vacantes</span>
 
 
   </div>
@@ -8,46 +8,55 @@
 
     <p-table
       #dt2
-      [value]="users"
-      dataKey="id"
-      [rows]="10"
       [columns]="columns"
-      [rowsPerPageOptions]="[10, 25, 50]"
+      [globalFilterFields]="dataSource"
       [loading]="loading"
       [paginator]="true"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [rows]="10"
       [showFirstLastIcon]="false"
-      [globalFilterFields]="dataSource"
       [tableStyle]="{ 'min-width': '75rem' }"
+      [value]="users"
+      dataKey="id"
       paginatorStyleClass="text-end"
       responsiveLayout="stack"
     >
-      <ng-template pTemplate="caption" let-columns>
+      <ng-template let-columns pTemplate="caption">
         <div class="ng-star-inserted">
           <div class="flex flex-wrap gap-2 align-items-center ng-star-inserted pb-2">
             <span class="p-input-icon-left sm:w-20rem flex-order-1 sm:flex-order-0 w-full">
                 <i class="pi pi-search"></i>
-                <input pInputText type="text" [(ngModel)]="searchValue" [style]="{'width': '100%'}"
-                       (input)="dt2.filterGlobal(event($event.target), 'contains')" placeholder="Buscar"/>
+                <input (input)="dt2.filterGlobal(event($event.target), 'contains')" [(ngModel)]="searchValue"
+                       [style]="{'width': '100%'}" pInputText
+                       placeholder="Buscar" type="text"/>
             </span>
-            <button *ngxPermissionsOnly="'web.baja'" pButton pRipple icon="pi pi-user-plus" label="Add New"
-                    (click)="clearTable(dt2)"
-                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
-              <span class="p-button-icon p-button-icon-left pi pi-filter-slash" aria-hidden="true"></span>
+            <button (click)="clearTable(dt2)" *ngxPermissionsOnly="'web.baja'"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
+                    icon="pi pi-user-plus" label="Add New"
+                    pButton
+                    pRipple>
+              <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-filter-slash"></span>
               <span class="p-button-label">Limpiar filtro</span>
             </button>
-            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
-                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
-              <span class="p-button-icon p-button-icon-left pi pi-download" aria-hidden="true"></span>
+            <button (click)="clearTable(dt2)"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
+                    icon="pi pi-user-plus" label="Add New" pButton
+                    pRipple>
+              <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-download"></span>
               <span class="p-button-label">Reporte pagadora</span>
             </button>
-            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
-                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
-              <span class="p-button-icon p-button-icon-left pi pi-download" aria-hidden="true"></span>
+            <button (click)="clearTable(dt2)"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
+                    icon="pi pi-user-plus" label="Add New" pButton
+                    pRipple>
+              <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-download"></span>
               <span class="p-button-label">Descargar cartas de renuncia</span>
             </button>
-            <button pButton pRipple icon="pi pi-user-plus" label="Add New" (click)="clearTable(dt2)"
-                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component">
-              <span class="p-button-icon p-button-icon-left pi pi-download" aria-hidden="true"></span>
+            <button (click)="clearTable(dt2)"
+                    class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
+                    icon="pi pi-user-plus" label="Add New" pButton
+                    pRipple>
+              <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-download"></span>
               <span class="p-button-label">Exportar aceptados</span>
             </button>
 
@@ -57,30 +66,28 @@
             <span class="p-input-icon-left w-24 flex-order-1 sm:flex-order-0 w-full pt-4">
                <p-floatLabel>
                 <p-calendar
-                  [(ngModel)]="rangeDates"
                   (onClose)="getRegistros()"
-                  id="calendar"
-                  [style]="{'width': '100%'}"
-                  selectionMode="range"
+                  [(ngModel)]="rangeDates"
+                  [iconDisplay]="'input'"
                   [readonlyInput]="true"
                   [showIcon]="true"
                   [stepYearPicker]="false"
-                  [iconDisplay]="'input'"/>
+                  [style]="{'width': '100%'}"
+                  id="calendar"
+                  selectionMode="range"/>
                   <label for="calendar">Fecha</label>
                  </p-floatLabel>
             </span>
 
             <span class="p-input-icon-left w-24 flex-order-2 sm:flex-order-0 w-full pt-4">
-                <p-columnFilter id="vacante" [field]="'vacante'" [showClearButton]="false">
-                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-columnFilter [field]="'vacante'" [showClearButton]="false" id="vacante">
+                    <ng-template let-filter="filterCallback" let-value pTemplate="filter">
                     <p-floatLabel>
                               <p-dropdown
-                                [options]="vacantes"
                                 (onChange)="filter($event.value)"
+                                [options]="vacantes"
                                 optionLabel="descripcion"
-                                optionValue="descripcion"
-                                placeholder="Select One"
-                                [showClear]="true">
+                                optionValue="descripcion">
                               </p-dropdown>
                       <label for="vacante">Vacante</label>
                     </p-floatLabel>
@@ -89,16 +96,14 @@
             </span>
 
             <span class="p-input-icon-left w-24 flex-order-2 sm:flex-order-0 w-full pt-4">
-                <p-columnFilter id="estado" [field]="'estado'"  [showClearButton]="false">
-                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-columnFilter [field]="'estado'" [showClearButton]="false" id="estado">
+                    <ng-template let-filter="filterCallback" let-value pTemplate="filter">
                     <p-floatLabel>
                               <p-dropdown
-                                [options]="estados"
                                 (onChange)="filter($event.value)"
+                                [options]="estados"
                                 optionLabel="nombre"
-                                optionValue="nombre"
-                                placeholder="Select One"
-                                [showClear]="true">
+                                optionValue="nombre">
                               </p-dropdown>
                       <label for="estado">Estado</label>
                     </p-floatLabel>
@@ -107,16 +112,14 @@
             </span>
 
             <span class="p-input-icon-left w-24 flex-order-2 sm:flex-order-0 w-full pt-4">
-                <p-columnFilter id="estatus" [field]="'estatus'"  [showClearButton]="false">
-                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                <p-columnFilter [field]="'estatus'" [showClearButton]="false" id="estatus">
+                    <ng-template let-filter="filterCallback" let-value pTemplate="filter">
                     <p-floatLabel>
                               <p-dropdown
-                                [options]="estatus"
                                 (onChange)="filter($event.value)"
+                                [options]="estatus"
                                 optionLabel="nombre"
-                                optionValue="campo"
-                                placeholder="Select One"
-                                [showClear]="true">
+                                optionValue="campo">
                               </p-dropdown>
                       <label for="estatus">Estatus</label>
                     </p-floatLabel>
@@ -126,24 +129,170 @@
           </div>
         </div>
       </ng-template>
-      <ng-template pTemplate="header" let-columns>
+      <ng-template let-columns pTemplate="header">
         <tr>
           <th *ngFor="let col of columns" [ngStyle]="{'width.%': col.width}"
               [pSortableColumn]="col.field">{{ col.header }}
             <p-sortIcon [field]="col.field"></p-sortIcon>
           </th>
-          <th class="text-center">Acciones</th>
+          <th class="text-center" style="width: 10%">Acciones</th>
         </tr>
 
       </ng-template>
-      <ng-template pTemplate="body" let-rowData let-columns="columns">
+      <ng-template let-columns="columns" let-rowData pTemplate="body">
         <tr>
           <td *ngFor="let col of columns; let i = index">
             {{ rowData[col.field] }}
           </td>
           <td class="text-center">
-            <i *ngIf="!rowData.deleted_at" class="pi pi-eye pr-2 cursor-pointer"
-               (click)="mostrarDetalle(rowData.id)"></i>
+            <i (click)="documentos.toggle($event)" *ngIf="rowData.estatus != estatusVacante.RECHAZADOTEXTO"
+               class="pi pi-file-pdf pr-2 cursor-pointer"></i>
+            <p-tieredMenu #documentos [model]="itemsDoc" [popup]="true" appendTo="body">
+              <ng-template let-hasSubmenu="hasSubmenu" let-item pTemplate="item">
+                <ng-container *ngIf="item.id == 'curriculum'; else constancia">
+                  <div (click)="mostrarPDF(1 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
+                       *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
+                    <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                  </div>
+                </ng-container>
+                <ng-template #constancia>
+                  <ng-container *ngIf="item.id == 'constancia'; else documentosIE">
+                    <div (click)="mostrarPDF(1 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
+                         *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
+                         class="p-menuitem-link">
+                      <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                    </div>
+                  </ng-container>
+                  <ng-template #documentosIE>
+                    <ng-container *ngIf="item.id == 'documentosIE'; else documentosG">
+                      <div class="p-menuitem-link">
+                        <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                        <span *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto"></span>
+                      </div>
+                    </ng-container>
+                    <ng-template #documentosG>
+                      <ng-container *ngIf="item.id == 'documentosG'; else cartaIE ">
+                        <div *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                          <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                          <span *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto"></span>
+                        </div>
+                      </ng-container>
+                      <ng-template #cartaIE>
+                        <ng-container *ngIf="item.id == 'cartaIE'; else pruebaIE">
+                          <div
+                            (click)="mostrarPDF(1 ,rowData.id, 'carta-compromiso', 'Carta compromiso de ' + rowData.nombre)"
+                            *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
+                            class="p-menuitem-link">
+                            <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                          </div>
+                        </ng-container>
+                        <ng-template #pruebaIE>
+                          <ng-container *ngIf="item.id == 'pruebaIE'; else convenioIE">
+                            <div
+                              (click)="mostrarPDF(1 ,rowData.id, 'periodo-prueba', 'Periodo de prueba de ' + rowData.nombre)"
+                              *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                              <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                            </div>
+                          </ng-container>
+                          <ng-template #convenioIE>
+                            <ng-container *ngIf="item.id == 'convenioIE'; else delitosIE">
+                              <div (click)="mostrarPDF(1 ,rowData.id, 'convenio', 'Convenio de ' + rowData.nombre)"
+                                   *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                                <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                              </div>
+                            </ng-container>
+                            <ng-template #delitosIE>
+                              <ng-container *ngIf="item.id == 'delitosIE'; else contratoIE">
+                                <div
+                                  (click)="mostrarPDF(1 ,rowData.id, 'delitos-electorales', 'Carta de delitos de ' + rowData.nombre)"
+                                  *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                                  <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                                </div>
+                              </ng-container>
+                              <ng-template #contratoIE>
+                                <ng-container *ngIf="item.id == 'contratoIE'; else renunciaIE">
+                                  <div (click)="mostrarPDF(1 ,rowData.id, 'contrato', 'Contrato de ' + rowData.nombre)"
+                                       *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                                    <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                                  </div>
+                                </ng-container>
+                                <ng-template #renunciaIE>
+                                  <ng-container *ngIf="item.id == 'renunciaIE'; else pruebaG ">
+                                    <div
+                                      (click)="mostrarPDF(1 ,rowData.id, 'solicitud-carta-terminacion', 'Carta de ' + rowData.nombre)"
+                                      *ngIf="rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                                      <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                                    </div>
+                                  </ng-container>
+                                  <ng-template #pruebaG>
+                                    <ng-container *ngIf="item.id == 'pruebaG'; else renunciaG ">
+                                      <div
+                                        (click)="mostrarPDF(2 ,rowData.id, 'periodo-prueba', 'Periodo de prueba de ' + rowData.nombre)"
+                                        *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                                        <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                                      </div>
+                                    </ng-container>
+                                    <ng-template #renunciaG>
+                                      <ng-container *ngIf="item.id == 'renunciaG'">
+                                        <div
+                                          (click)="mostrarPDF(2 ,rowData.id, 'solicitud-carta-terminacion', 'Carta de ' + rowData.nombre)"
+                                          *ngIf="rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                                          <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                                        </div>
+                                      </ng-container>
+                                    </ng-template>
+                                  </ng-template>
+                                </ng-template>
+                              </ng-template>
+                            </ng-template>
+                          </ng-template>
+                        </ng-template>
+                      </ng-template>
+                    </ng-template>
+                  </ng-template>
+                </ng-template>
+              </ng-template>
+            </p-tieredMenu>
+            <i (click)="mostrarDetalle(rowData.id)"
+               class="pi pi-eye pr-2 cursor-pointer"></i>
+            <i (click)="solicitud.toggle($event)" *ngIf="rowData.estatus != estatusVacante.BAJATEXTO && rowData.estatus != estatusVacante.RECHAZADOTEXTO"
+               class="pi pi-user-edit pr-2 cursor-pointer"></i>
+            <p-tieredMenu #solicitud [model]="itemsSolicitud" [popup]="true" appendTo="body">
+              <ng-template let-item pTemplate="item">
+                <ng-container *ngIf="item.id == 'aceptar'; else rechazar">
+                  <div (click)="cambiarEstatus(rowData, 'aceptar')"
+                       *ngIf="rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
+                    <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                  </div>
+                </ng-container>
+                <ng-template #rechazar>
+                  <ng-container *ngIf="item.id == 'rechazar'; else editar_fecha ">
+                    <div (click)="cambiarEstatus(rowData, 'rechazar')"
+                      *ngIf="rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
+                      <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                    </div>
+                  </ng-container>
+                  <ng-template #editar_fecha>
+                    <ng-container *ngIf="item.id == 'editar_fecha'; else dar_baja ">
+                      <div
+                        (click)="cambiarEstatus(rowData, 'actualizar-inicio')"
+                        *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                        <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                      </div>
+                    </ng-container>
+                    <ng-template #dar_baja>
+                      <ng-container *ngIf="item.id == 'dar_baja'">
+                        <div
+                          (click)="cambiarEstatus(rowData, 'baja')"
+                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                          <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                        </div>
+                      </ng-container>
+                    </ng-template>
+                  </ng-template>
+                </ng-template>
+              </ng-template>
+            </p-tieredMenu>
           </td>
         </tr>
       </ng-template>

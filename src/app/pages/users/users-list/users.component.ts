@@ -19,17 +19,24 @@ import {LoadingService} from "../../../share/services/loading.service";
 import {NgxPermissionsModule} from "ngx-permissions";
 import {DropdownModule} from "primeng/dropdown";
 import {DialogService} from "primeng/dynamicdialog";
-import {ModalVisualizarComponent} from "../../../share/components/modals/modal-visualizar/modal-visualizar.component";
 import {FooterEditComponent} from "../../../share/components/modals/footer-edit.component";
 import {CalendarModule} from "primeng/calendar";
 import {FloatLabelModule} from "primeng/floatlabel";
+import {TieredMenuModule} from "primeng/tieredmenu";
+import {ModalDetalleComponent} from "../../../share/components/modals/modal-detalle/modal-detalle.component";
+import {DomSanitizer} from "@angular/platform-browser";
+import {ModalVisualizarComponent} from "../../../share/components/modals/modal-visualizar/modal-visualizar.component";
+import {environment} from "../../../../environments/environment";
+import {AuthService} from "../../../share/services/auth.service";
+import {ModalSolicitudComponent} from "../../../share/components/modals/modal-solicitud/modal-solicitud.component";
+import {EstatusVacante} from "../../../share/enums/estatus-vacante";
 
 
 @Component({
   selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, TableModule, TagModule, IconFieldModule, InputIconModule, InputTextModule, ButtonDirective, PasswordModule, FormsModule, Button, Ripple, RouterLink, ModalAlertComponent, MatTooltip, TooltipModule, NgxPermissionsModule, DropdownModule, CalendarModule, FloatLabelModule],
-  providers: [ConfirmationService, MessageService, LoadingService],
+  imports: [CommonModule, TableModule, TagModule, IconFieldModule, InputIconModule, InputTextModule, ButtonDirective, PasswordModule, FormsModule, Button, Ripple, RouterLink, ModalAlertComponent, MatTooltip, TooltipModule, NgxPermissionsModule, DropdownModule, CalendarModule, FloatLabelModule, TieredMenuModule],
+  providers: [LoadingService],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
@@ -38,21 +45,115 @@ export class UsersComponent implements OnInit {
   columns!: any[];
   loading: boolean = true;
   searchValue: string | undefined
+  estatusVacante = EstatusVacante;
   dataSource = ['fecha_registro', 'vacante', 'estado', 'nombre', 'estado_origen', 'clave_ine', 'estatus', 'procesado'];
   estados: any = [];
   vacantes: any = [];
   rangeDates: Date[] = [];
+  itemsDoc = [
+    {
+      label: 'Curriculum',
+      icon: 'pi pi-file-pdf',
+      id: 'curriculum'
+    },
+    {
+      label: 'Constancia de situación fiscal',
+      icon: 'pi pi-file-pdf',
+      id: 'constancia'
+    },
+    {separator: true},
+    {
+      label: 'Documentos Informática Electoral',
+      icon: 'pi pi-file-pdf',
+      id: 'documentosIE',
+      items: [
+        {
+          label: 'Carta compromiso',
+          id: 'cartaIE',
+          icon: 'pi pi-plus'
+        },
+        {
+          label: 'Periodo de prueba',
+          id: 'pruebaIE',
+          icon: 'pi pi-folder-open'
+        },
+        {
+          label: 'Convenio de confidencialidad',
+          id: 'convenioIE',
+          icon: 'pi pi-print'
+        },
+        {
+          label: 'Delitos Electorales',
+          id: 'delitosIE',
+          icon: 'pi pi-folder-open'
+        },
+        {
+          label: 'Contrato',
+          id: 'contratoIE',
+          icon: 'pi pi-folder-open'
+        },
+        {
+          label: 'Carta de renuncia',
+          id: 'renunciaIE',
+          icon: 'pi pi-folder-open'
+        },
+      ]
+    },
+    {
+      label: 'Documentos General',
+      icon: 'pi pi-file-pdf',
+      id: 'documentosG',
+      items: [
+        {
+          label: 'Periodo de prueba',
+          id: 'pruebaG',
+          icon: 'pi pi-times'
+        },
+        {
+          label: 'Carta de renuncia',
+          id: 'renunciaG',
+          icon: 'pi pi-folder-open'
+        },
+      ]
+    }
+  ]
+  itemsSolicitud = [
+    {
+      label: 'Aceptar solicitud',
+      id: 'aceptar'
+    },
+    {
+      label: 'Rechazar solicitud',
+      id: 'rechazar'
+    },
+    {
+      label: 'Editar fecha de contrato',
+      id: 'editar_fecha',
+    },
+    {
+      label: 'Dar de baja',
+      id: 'dar_baja',
+    }
+  ]
+
   estatus = [
-    {'nombre': 'Todos los estatus', 'campo': ''},
-    {'nombre': 'Pendientes', 'campo': 'Pendiente'},
-    {'nombre': 'Rechazados', 'campo': 'Rechazado'},
-    {'nombre': 'Aceptados', 'campo': 'Aceptado'},
-    {'nombre': 'Baja', 'campo': 'Baja'},
+    {'nombre': 'Todos los estatus', 'campo': ' '},
+    {'nombre': 'Pendientes', 'campo': 'pendiente'},
+    {'nombre': 'Rechazados', 'campo': 'rechazado'},
+    {'nombre': 'Aceptados', 'campo': 'aceptado'},
+    {'nombre': 'Baja', 'campo': 'baja'},
   ];
+
+
   constructor(
     private _userService: UsersService,
     private primeConfig: PrimeNGConfig,
-    private dialogService: DialogService) {
+    private domSanitizer: DomSanitizer,
+    private authService: AuthService,
+    private dialogService: DialogService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService) {
+
     this.primeConfig.ripple = true;
     this.getEstados();
   }
@@ -89,15 +190,15 @@ export class UsersComponent implements OnInit {
     this._userService.getEstados().subscribe((res: any) => {
       this.estados = res.estados;
       this.vacantes = res.vacantes;
+      this.estados.unshift({'nombre': 'Todos los estados'})
+      this.vacantes.unshift({'descripcion': 'Todas las vacantes'})
     });
-    this.estados.unshift({'nombre': ''})
-    this.estados.unshift({'descripcion': ''})
   }
 
   mostrarDetalle(id: number) {
 
     this._userService.showDetalle(id).subscribe(res => {
-      this.dialogService.open(ModalVisualizarComponent,
+      this.dialogService.open(ModalDetalleComponent,
         {
           header: 'Registro',
           width: '75vw',
@@ -116,6 +217,72 @@ export class UsersComponent implements OnInit {
     });
   }
 
+  mostrarPDF(tipo: number, id: number, uri: string, nombre: string) {
+
+    const token = this.authService.getToken();
+    const ruta = `${environment.api.baseUrl}/${uri}/${tipo}/${id}?token=${token}`;
+    let url = this.domSanitizer.bypassSecurityTrustResourceUrl(ruta);
+    this.dialogService.open(ModalVisualizarComponent,
+      {
+        header: nombre,
+        width: '79vw',
+        height: '90vh',
+        contentStyle: {padding: 0},
+        breakpoints: {
+          '991px': '80vw',
+          '640px': '90vw'
+        },
+        maximizable: true,
+        data: url
+      })
+  }
+
+  cambiarEstatus(data: any, ruta: string) {
+
+    if (ruta == 'rechazar') {
+      this.confirmationService.confirm({
+        message: `¿Está seguro que desea RECHAZAR la solicitud?`,
+        header: 'Confirmación',
+        acceptIcon: "none",
+        acceptLabel: 'Sí',
+        rejectIcon: "none",
+        rejectLabel: 'No',
+        rejectButtonStyleClass: "p-button-text",
+        accept: () => {
+          this._userService.rechazarSolicitud(data.id).subscribe((res: any) => {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Éxito',
+              detail: 'La solicitud fue rechazada.'
+            });
+            this.getRegistros();
+          })
+        }
+      });
+    } else {
+      const dialog = this.dialogService.open(ModalSolicitudComponent,
+        {
+          header: 'Datos',
+          width: '40vw',
+          height: '65vh',
+          contentStyle: {padding: 0},
+          breakpoints: {
+            '991px': '80vw',
+            '640px': '90vw'
+          },
+          maximizable: true,
+          data: {
+            info: data,
+            ruta: ruta,
+          }
+        })
+
+      dialog.onClose.subscribe(_ => {
+        this.getRegistros();
+      })
+    }
+
+  }
 
   event(ev: any) {
     return ev.value;
@@ -124,8 +291,9 @@ export class UsersComponent implements OnInit {
   clearTable(table: Table) {
     table.clear();
     this.searchValue = '';
+    this.rangeDates = [];
+    this.getRegistros();
   }
-
 
   formatoFecha(fecha: Date): string {
     if (!fecha) return '';

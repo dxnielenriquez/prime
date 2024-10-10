@@ -1,10 +1,9 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Button, ButtonDirective} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
-import {NgClass} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 import {DockModule} from "primeng/dock";
 import {DynamicDialogConfig} from "primeng/dynamicdialog";
-import {environment} from "../../../../../environments/environment";
 import {AvatarModule} from "primeng/avatar";
 import {ImageModule} from "primeng/image";
 
@@ -18,20 +17,30 @@ import {ImageModule} from "primeng/image";
     ButtonDirective,
     DockModule,
     AvatarModule,
-    ImageModule
+    ImageModule,
+    NgIf
   ],
   templateUrl: './modal-visualizar.component.html',
   styleUrls: ['./modal-visualizar.component.css']
 })
-export class ModalVisualizarComponent {
+export class ModalVisualizarComponent implements OnInit {
 
   data: any;
-  perfil = environment.api.storageUrl + 'imagenes_perfiles/'
-  credencial = environment.api.storageUrl + 'imagenes_credenciales/'
+  loading = true;
 
-  constructor(private configDialog: DynamicDialogConfig) {
+  constructor(configDialog: DynamicDialogConfig) {
     this.data = configDialog.data;
   }
 
-  protected readonly environment = environment;
+  ngOnInit(): void {
+    const iframe = document.getElementById("pdfFrame") as HTMLIFrameElement;
+    if (iframe) {
+      iframe.addEventListener("load", () => {
+        this.loading = false;
+      });
+    }
+  }
+
+
 }
+

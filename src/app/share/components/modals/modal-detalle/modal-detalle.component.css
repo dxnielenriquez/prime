@@ -1,0 +1,17 @@
+.item1 { grid-area: foto; }
+.item2 { grid-area: datos; }
+.item3 { grid-area: infoS; }
+.item4 { grid-area: infoG; }
+.item5 { grid-area: infoB; }
+.item6 { grid-area: imagen; }
+
+.container {
+  display: grid;
+  grid-template-areas:
+    'foto foto foto foto'
+    'datos datos infoS infoS'
+    'infoG infoG infoB infoB'
+    'imagen imagen imagen imagen';
+  gap: 10px;
+  padding: 10px;
+}

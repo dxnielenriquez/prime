@@ -6,6 +6,7 @@ import {environment} from "../../../environments/environment";
 export interface Role{
   name : string;
   slug : string;
+  id : number;
   permissions: Permissions;
 }
 export interface User{
@@ -74,6 +75,10 @@ export class AuthService {
 
   getUser(): User | null  {
     return this.getStorage()?.user || null;
+  }
+
+  getRole(): Role | null  {
+    return this.getStorage()?.role || null;
   }
 
   getPermissions(): Permissions | undefined{

@@ -1,0 +1,160 @@
+<div class="w-full h-full container">
+
+  <div class="item1 flex flex-column align-items-center">
+
+    <form [formGroup]="form" [ngSwitch]="data.ruta">
+      <ng-container *ngSwitchCase="'aceptar'">
+        <div class="flex align-self-center align-items-center">
+          <span class="material-icons pr-2">person</span>
+          <p class="title" style="max-width: 300px">Agregar los datos de {{ data.info.nombre }}</p>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <p-dropdown
+              [options]="bancos"
+              [style]="{'width': '100%'}"
+              formControlName="banco_id"
+              id="banco_id"
+              optionLabel="nombre_corto"
+              optionValue="id">
+            </p-dropdown>
+            <label for="banco_id">Bancos</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('banco_id','required')" class="text-red-400 pt-2">
+            El campo es requerido.</small>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <p-calendar
+              [iconDisplay]="'input'"
+              [readonlyInput]="true"
+              [showIcon]="true"
+              [style]="{'width': '100%'}"
+              formControlName="fecha_inicio"
+              id="calendar"/>
+            <label for="calendar">Fecha</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('fecha_inicio','required')" class="text-red-400 pt-2">
+            La fecha es requerida.</small>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <input class="w-full" formControlName="numero_cuenta" id="numero_cuenta" pInputText
+                   type="text">
+            <label for="numero_cuenta">Número de cuenta</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('numero_cuenta','maxlength')" class="text-red-400 pt-2">
+            El campo debe contener máximo <strong>24 caracteres</strong>.</small>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <input class="w-full" formControlName="clabe" id="clabe" pInputText
+                   type="text">
+            <label for="clabe">CLABE</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('clabe','required')" class="text-red-400 pt-2">
+            El campo es requerido.</small>
+          <small *ngIf="isControlHasError('clabe', 'minlength') || isControlHasError('clabe', 'maxlength')" class="text-red-400 pt-2">
+            Sólo se aceptan <strong>18 dígitos</strong></small>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <input class="w-full" formControlName="tarjeta" id="tarjeta" pInputText
+                   type="text">
+            <label for="tarjeta">Número de tarjeta</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('tarjeta','required')" class="text-red-400 pt-2">
+            El campo es requerido.</small>
+          <small *ngIf="isControlHasError('tarjeta', 'minlength') || isControlHasError('tarjeta', 'maxlength')" class="text-red-400 pt-2">
+            Sólo se aceptan <strong>16 dígitos</strong></small>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'actualizar-inicio'">
+        <div class="flex align-self-center align-items-center">
+          <span class="material-icons pr-2">person</span>
+          <p class="title" style="max-width: 300px">Editar la fecha de ingreso de {{ data.info.nombre }}</p>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <p-calendar
+              [iconDisplay]="'input'"
+              [readonlyInput]="true"
+              [showIcon]="true"
+              [style]="{'width': '100%'}"
+              formControlName="fecha_inicio"
+              id="fecha_inicio"/>
+            <label for="fecha_inicio">Fecha de ingreso</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('fecha_inicio','required')" class="text-red-400 pt-2">
+            La fecha es requerida.</small>
+        </div>
+      </ng-container>
+
+      <ng-container *ngSwitchCase="'baja'">
+        <div class="flex align-self-center align-items-center">
+          <span class="material-icons pr-2">person</span>
+          <p class="title" style="max-width: 300px">Llena el formulario de baja de {{ data.info.nombre }}</p>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <p-calendar
+              [iconDisplay]="'input'"
+              [readonlyInput]="true"
+              [showIcon]="true"
+              [style]="{'width': '100%'}"
+              formControlName="fecha_termino"
+              id="fecha_termino"/>
+            <label for="fecha_termino">Fecha</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('fecha_termino','required')" class="text-red-400 pt-2">
+            La fecha es requerida.</small>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <p-dropdown
+              [options]="motivos"
+              [style]="{'width': '100%'}"
+              formControlName="motivo_baja_id"
+              id="motivo_baja"
+              optionLabel="nombre"
+              optionValue="id">
+            </p-dropdown>
+            <label for="motivo_baja">Bancos</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('motivo_baja_id','required')" class="text-red-400 pt-2">
+            El campo es requerido.</small>
+        </div>
+        <div class="mt-4">
+          <p-checkbox
+            [binary]="true"
+            formControlName="recontratable"
+            inputId="binary"
+            label="¿Consideras recontratar?"/>
+        </div>
+        <div class="mt-4">
+          <p-floatLabel>
+            <textarea
+              cols="30"
+              formControlName="observaciones"
+              id="observaciones"
+              pInputTextarea
+              rows="5">
+            </textarea>
+            <label for="observaciones">Número de cuenta</label>
+          </p-floatLabel>
+          <small *ngIf="isControlHasError('observaciones','required')" class="text-red-400 pt-2">
+            El campo es requerido.</small>
+          <small *ngIf="isControlHasError('observaciones','maxlength')" class="text-red-400 pt-2">
+            El campo debe contener máximo <strong>191 caracteres</strong>.</small>
+        </div>
+      </ng-container>
+    </form>
+
+  </div>
+  <div class="flex w-full justify-content-end align-items-end p-3">
+    <p-button (onClick)="onSubmit()" label="Guardar" type="button"/>
+  </div>
+</div>
+
+

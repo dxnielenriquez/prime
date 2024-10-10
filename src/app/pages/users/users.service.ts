@@ -20,19 +20,6 @@ export class UsersService {
     return this._http.get('listado-registro', {params: params});
   }
 
-  public getEstados() {
-    return this._http.get('estados', {
-      headers: {noWeb: 'true'}
-    });
-  }
-
-  public showDetalle(id: any) {
-    return this._http.get('visualizar-detalle/' + id, {
-      headers: {noLoading: 'true'}
-    });
-  }
-
-
   public roles(): Observable<any> {
     return this._http.get('usuarios/roles', {
       headers: {noLoading: 'true'}
@@ -53,8 +40,31 @@ export class UsersService {
     return this._http.put(`usuarios/${id}`, body);
   }
 
-  public delete(id: number): Observable<any> {
-    return this._http.delete(`usuarios/${id}`);
+
+  public getEstados() {
+    return this._http.get('estados', {
+      headers: {noWeb: 'true'}
+    });
+  }
+
+  public showDetalle(id: any) {
+    return this._http.get('visualizar-detalle/' + id);
+  }
+
+  public cambiarEstatus(ruta: string, id: number, data: any) {
+    return this._http.put(`solicitud/${id}/${ruta}`, data);
+  }
+
+  public rechazarSolicitud( id: number) {
+    return this._http.get(`solicitud/${id}/rechazar`);
+  }
+
+  getBancos(): Observable<any> {
+    return this._http.get('catalogo-bancos');
+  }
+
+  getMotivosBaja(): Observable<any> {
+    return this._http.get('motivos-baja');
   }
 
 
