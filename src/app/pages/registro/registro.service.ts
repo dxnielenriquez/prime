@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
   providedIn: 'root'
 })
 export class RegistroService {
+  private url = '';
 
   constructor(
     private _http: HttpClient,
@@ -46,5 +47,17 @@ export class RegistroService {
       headers: {noWeb: 'true'}
     })
   }
+
+public crearRegistro(): Observable<any> {
+    return this._http.post('registro', {
+      headers: {noWeb: 'true'}
+    })
+}
+
+public sendIne(cv: any, clave_ine: any): Observable<any> {
+    return this._http.post(`enviar-cv?clave_ine=${clave_ine}`, cv, {
+      headers: {noWeb: 'true'}
+    })
+}
 
 }
