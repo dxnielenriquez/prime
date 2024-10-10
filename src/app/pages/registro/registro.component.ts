@@ -11,7 +11,7 @@ import {MenuItem, MessageService} from "primeng/api";
 import {FloatLabelModule} from "primeng/floatlabel";
 import {ChipsModule} from "primeng/chips";
 import {CalendarModule} from "primeng/calendar";
-import {FileUploadModule, UploadEvent} from "primeng/fileupload";
+import {FileUploadModule} from "primeng/fileupload";
 import {CheckboxModule} from "primeng/checkbox";
 
 @Component({
@@ -30,6 +30,7 @@ export class RegistroComponent implements OnInit {
   estados = [];
   municipios = [];
   municipiosSolicitante: any[] = [];
+  municipiosBeneficiario: any[] = [];
   estadosOrigen = [];
   estadosBeneficiario = [];
   query: any;
@@ -77,7 +78,7 @@ export class RegistroComponent implements OnInit {
       numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      codigo_postal: ['', [Validators.minLength(5),  Validators.pattern(/^([0-9])*$/)]],
+      codigo_postal: ['', [Validators.minLength(5), Validators.pattern(/^([0-9])*$/)]],
       estado_id: ['', Validators.required],
       municipio_id: [{value: '', disabled: true}, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
@@ -139,7 +140,8 @@ export class RegistroComponent implements OnInit {
       next: (res) => {
         this.estados = res.estados;
         this.vacantes = res.vacantes;
-
+        this.estadosOrigen = res.estados_origen;
+        this.estadosBeneficiario = res.estados_origen;
         if (this.query && (this.query.estado || this.query.vacante)) {
           let estado = this.query.estado;
           let vacante = this.query.vacante;
@@ -192,23 +194,23 @@ export class RegistroComponent implements OnInit {
       municipioSolicitante!.reset();
     });
   }
-  getMunicipiosBeneficiario() {
-    let estadoIdSolicitante = this.form.get(`solicitante.estado_id`)?.value;
-    let municipioSolicitante = this.form.get(`solicitante.municipio_id`);
 
-    if (!estadoIdSolicitante) {
-      municipioSolicitante?.disable();
-      municipioSolicitante?.reset();
+  getMunicipiosBeneficiario() {
+    let estadoIdBeneficiario = this.form.get(`beneficiario.estado_id`)?.value;
+    let municipioBeneficiario = this.form.get(`beneficiario.municipio_id`);
+
+    if (!estadoIdBeneficiario) {
+      municipioBeneficiario?.disable();
+      municipioBeneficiario?.reset();
       return;
     }
 
-    this.registroService.getMunicipios(estadoIdSolicitante).subscribe(res => {
-      this.municipiosSolicitante = res;
-      municipioSolicitante!.enable();
-      municipioSolicitante!.reset();
+    this.registroService.getMunicipios(estadoIdBeneficiario).subscribe(res => {
+      this.municipiosBeneficiario = res;
+      municipioBeneficiario!.enable();
+      municipioBeneficiario!.reset();
     });
   }
-
 
   getDateTime() {
     this.registroService.getFecha().subscribe(res => {
@@ -328,6 +330,7 @@ export class RegistroComponent implements OnInit {
     archivoInput.value = '';
     console.log(archivoInput);
   }
+
   readerLoaded(readerEvt: any) {
     this.base64textString = readerEvt.target.result;
   }

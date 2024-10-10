@@ -180,7 +180,7 @@
           <p-floatLabel class="tamañotwo">
             <p-dropdown
               id="estadoSolicitante"
-              [options]="estados"
+              [options]="estadosOrigen"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
               formControlName="estado_id"
@@ -194,7 +194,7 @@
           <p-floatLabel class="tamañotwo">
             <p-dropdown
               id="municipioSolicitante"
-              [options]="municipios"
+              [options]="municipiosSolicitante"
               formControlName="municipio_id"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
@@ -311,7 +311,7 @@
           <p-floatLabel class="tamañotwo">
             <p-dropdown
               id="estadoBeneficiario"
-              [options]="estados"
+              [options]="estadosBeneficiario"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
               formControlName="estado_id"
@@ -325,7 +325,7 @@
           <p-floatLabel class="tamañotwo">
             <p-dropdown
               id="municipioBeneficiario"
-              [options]="municipios"
+              [options]="municipiosBeneficiario"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
               formControlName="municipio_id"
