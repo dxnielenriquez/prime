@@ -142,6 +142,7 @@
               formControlName="fecha_nacimiento"
               [iconDisplay]="'input'"
               [showIcon]="true"
+              [readonlyInput]="true"
               inputId="icondisplay"/>
             <label class=" block mb-2"> Fecha de nacimiento </label>
           </p-floatLabel>
@@ -274,6 +275,8 @@
           <div class="card flex justify-content-center">
             <p-checkbox
               [binary]="true"
+              formControlName="usarDomicilio"
+              (onChange)="usarDomicilio()"
               inputId="binary"/>
             <label>Usar domicilio del solicitante</label>
 
@@ -367,7 +370,7 @@
           <p-checkbox
             [binary]="true"
             inputId="binary"/>
-          <label>Aviso de privacidad</label>
+          <a href="javascript:" (click)="verAviso()">Aviso de privacidad</a>
         </div>
       </div>
 
@@ -401,7 +404,7 @@
   <div class="flex justify-content-between m-5">
 
     <div
-      (click)="active = active > 0 ? active - 1 : active"
+      (click)="back()"
       class="custom-button prev-button"
       [class.disabled]="active === 0"
       style="margin-right: auto;">
@@ -413,7 +416,7 @@
         Registrarse
       </div>
       <ng-template #nextButton>
-        <div (click)="active = active < 3 ? active + 1 : active">
+        <div (click)="next()">
           Continuar
         </div>
       </ng-template>

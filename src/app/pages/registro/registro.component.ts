@@ -3,7 +3,7 @@ import {ToastModule} from "primeng/toast";
 import {StepsModule} from "primeng/steps";
 import {Button} from "primeng/button";
 import {MatStep, MatStepper} from "@angular/material/stepper";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgIf, NgTemplateOutlet} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
 import {RegistroService} from "./registro.service";
@@ -13,6 +13,8 @@ import {ChipsModule} from "primeng/chips";
 import {CalendarModule} from "primeng/calendar";
 import {FileUploadModule} from "primeng/fileupload";
 import {CheckboxModule} from "primeng/checkbox";
+import {ActivatedRoute, Router} from "@angular/router";
+import {environment} from "../../../environments/environment.development";
 
 @Component({
   selector: 'app-registro',
@@ -47,6 +49,8 @@ export class RegistroComponent implements OnInit {
   imageURLProfile: any;
   selectedImage: string | ArrayBuffer | null = null;
   base64textString: any;
+  nuevoRegistro = false;
+  storage = environment.api.storageUrl
   // selectedImage: any;
   selectedIneImage: string | ArrayBuffer | null = null;
   columnas = [
@@ -99,6 +103,8 @@ export class RegistroComponent implements OnInit {
       codigo_postal: ['', [Validators.minLength(5)]],
       estado_id: ['', Validators.required],
       municipio_id: [{value: '', disabled: true}, Validators.required],
+      usarDomicilio: [false]
+
 
     }),
     documentacion: this._formBuilder.group({
@@ -106,7 +112,8 @@ export class RegistroComponent implements OnInit {
       curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18)]],
       rfc: ['', [Validators.required, Validators.minLength(12)]],
       nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-      cv: ['',]
+      cv: ['',],
+      aviso: [false, Validators.required,]
 
     }),
   });
@@ -115,7 +122,9 @@ export class RegistroComponent implements OnInit {
   constructor(
     private registroService: RegistroService,
     private _formBuilder: FormBuilder,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {
     this.getDateTime();
     this.getEstados();
@@ -335,13 +344,140 @@ export class RegistroComponent implements OnInit {
     this.base64textString = readerEvt.target.result;
   }
 
+  usarDomicilio() {
+    if (this.form.controls.beneficiario.get('usarDomicilio')!.value) {
+      const solicitanteControls = this.form.controls.solicitante.controls;
+      const beneficiarioControls = this.form.controls.beneficiario.controls;
+this.municipiosBeneficiario = this.municipiosSolicitante;
+      beneficiarioControls.calle.setValue(solicitanteControls.calle.value);
+      beneficiarioControls.numero_ext.setValue(solicitanteControls.numero_ext.value);
+      beneficiarioControls.numero_int.setValue(solicitanteControls.numero_int.value);
+      beneficiarioControls.colonia.setValue(solicitanteControls.colonia.value);
+      beneficiarioControls.codigo_postal.setValue(solicitanteControls.codigo_postal.value);
+      beneficiarioControls.estado_id.setValue(solicitanteControls.estado_id.value);
+      beneficiarioControls.municipio_id.setValue(solicitanteControls.municipio_id.value);
+    } else {
+      const beneficiarioControls = this.form.controls.beneficiario.controls;
+      beneficiarioControls.calle.reset();
+      beneficiarioControls.numero_ext.reset();
+      beneficiarioControls.numero_int.reset();
+      beneficiarioControls.colonia.reset();
+      beneficiarioControls.codigo_postal.reset();
+      beneficiarioControls.estado_id.reset();
+      beneficiarioControls.municipio_id.reset();
+    }
+  }
+
+
+  limpiarFormulario() {
+    this.form.reset();
+    this.form.get('documentacion.aviso')!.reset();
+    this.image = '';
+    this.imageProfile = '';
+    this.imageURL = '';
+    this.imageURLProfile = '';
+    this.base64textString = '';
+    this.base64textStringProfile = '';
+  }
+
+  verAviso() {
+    window.open(this.storage + 'aviso_de_privacidad.pdf', '_blank');
+  }
+
+
+  guardarRegistro(registro: any) {
+    const formData = new FormData();
+    Object.keys(registro).forEach(key => {
+      formData.append(key, registro[key]);
+    });
+    if (this.cv) {
+      formData.append('cv', this.cv);
+    } else {
+      console.warn('No se ha proporcionado ningún archivo CV.');
+    }
+    this.registroService.crearRegistro().subscribe(res => {
+      this.limpiarFormulario();
+      this.router.navigate(['../vacantes/registro'], {relativeTo: this.activatedRoute});
+
+      if (res.result === 'ok') {
+        const ine = registro.clave_ine;
+        this.registroService.sendIne(formData, ine).subscribe(ers => {
+          if (ers.result !== 'ok') {
+            console.error('Error al subir el Curriculum');
+          }
+        });
+      }
+    },);
+  }
+
   onSubmit() {
 
-    let controls = this.form['controls']
-    if (controls) {
-      console.log(controls);
+    console.log(this.form.value)
+
+
+
+    const registro = {
+      vacantes: this.form.get('vacantes')?.value,
+      solicitante: this.form.get('solicitante')?.value,
+      beneficiario: this.form.get('beneficiario')?.value,
+      documentacion: this.form.get('documentacion')?.value
+    };
+
+
+
+    // Guardar o actualizar el registro según corresponda
+    if (this.nuevoRegistro) {
+      this.guardarRegistro(registro);
+    } else {
+      // this.actualizarRegistro(registro);
+    }
+  }
+
+  next() {
+    let form: any;
+
+    switch (this.active) {
+      case 1:
+        form = this.form['controls'].solicitante;
+        break;
+      case 2:
+        form = this.form['controls'].beneficiario;
+        break;
+      case 3:
+        form = this.form['controls'].documentacion;
+        if (!this.base64textString && this.nuevoRegistro) {
+          console.error('Para continuar, debes subir una foto de tu INE.');
+          return;
+        }
+
+        if (!this.cv && this.nuevoRegistro) {
+          console.error('Para continuar, debes subir tu curriculum.');
+          return;
+        }
+        break;
+      default:
+        form = this.form['controls'].vacantes;
+        break;
+    }
+    const formControls = form.controls as { [p: string]: AbstractControl<any, any> };
+
+    if (form.invalid) {
+      Object.keys(formControls).forEach(controlName => {
+        formControls[controlName].markAsDirty();
+      })
+
+      return;
     }
 
+    if (this.active < 3) {
+      this.active += 1;
+    }
+  }
+
+  back() {
+    if (this.active > 0) {
+      this.active -= 1;
+    }
   }
 
 }
