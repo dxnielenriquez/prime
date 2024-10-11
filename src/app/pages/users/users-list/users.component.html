@@ -30,7 +30,7 @@
                        [style]="{'width': '100%'}" pInputText
                        placeholder="Buscar" type="text"/>
             </span>
-            <button (click)="clearTable(dt2)" 
+            <button (click)="clearTable(dt2)"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
                     icon="pi pi-user-plus" label="Add New"
                     pButton
@@ -45,14 +45,14 @@
               <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-download"></span>
               <span class="p-button-label">Reporte pagadora</span>
             </button>
-            <button (click)="clearTable(dt2)"
+            <button (click)="descargarTerminados()"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
                     icon="pi pi-user-plus" label="Add New" pButton
                     pRipple>
               <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-download"></span>
               <span class="p-button-label">Descargar cartas de renuncia</span>
             </button>
-            <button (click)="clearTable(dt2)"
+            <button (click)="descargarAceptados()"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
                     icon="pi pi-user-plus" label="Add New" pButton
                     pRipple>
@@ -104,7 +104,7 @@
                                 (onChange)="filter($event.value)"
                                 [options]="estados"
                                 optionLabel="nombre"
-                                optionValue="nombre">
+                                optionValue="campo">
                               </p-dropdown>
                       <label for="estado">Estado</label>
                     </p-floatLabel>
@@ -158,7 +158,7 @@
                 </ng-container>
                 <ng-template #constancia>
                   <ng-container *ngIf="item.id == 'constancia'; else documentosIE">
-                    <div (click)="mostrarPDF(2 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
+                    <div (click)="mostrarPDF(2 ,rowData.id, 'obtener-cv', 'Constancia de ' + rowData.nombre)"
                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
                          class="p-menuitem-link">
                       <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>

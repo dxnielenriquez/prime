@@ -5,7 +5,15 @@
       <p class="title">Foto del solicitante</p>
     </div>
     <p-avatar
+      *ngIf="data.foto_perfil"
       [image]="perfil + data.foto_perfil"
+      size="xlarge"
+      shape="circle"
+      alt="Perfil del solicitante"
+      class="mt-3"/>
+    <p-avatar
+      *ngIf="!data.foto_perfil"
+      icon="pi pi-user"
       size="xlarge"
       shape="circle"
       alt="Perfil del solicitante"

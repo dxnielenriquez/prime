@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {Button, ButtonDirective} from 'primeng/button';
 import {DialogModule} from 'primeng/dialog';
-import {NgClass} from "@angular/common";
+import {NgClass, NgIf} from "@angular/common";
 import {DockModule} from "primeng/dock";
 import {DynamicDialogConfig} from "primeng/dynamicdialog";
 import {environment} from "../../../../../environments/environment";
@@ -18,7 +18,8 @@ import {ImageModule} from "primeng/image";
     ButtonDirective,
     DockModule,
     AvatarModule,
-    ImageModule
+    ImageModule,
+    NgIf
   ],
   templateUrl: './modal-detalle.component.html',
   styleUrls: ['./modal-detalle.component.css']

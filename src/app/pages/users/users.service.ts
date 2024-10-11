@@ -55,8 +55,15 @@ export class UsersService {
     return this._http.put(`solicitud/${id}/${ruta}`, data);
   }
 
-  public rechazarSolicitud( id: number) {
+  public rechazarSolicitud(id: number) {
     return this._http.get(`solicitud/${id}/rechazar`);
+  }
+
+  getCartasRenuncia(): Observable<any> {
+    return this._http.get(`cartas-terminacion`, {responseType: 'arraybuffer'})
+  }
+  getAceptados(): Observable<any> {
+    return this._http.get(`contratados/excel`, {responseType: 'arraybuffer'})
   }
 
   getBancos(): Observable<any> {

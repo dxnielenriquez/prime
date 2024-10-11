@@ -191,14 +191,15 @@ export class UsersComponent implements OnInit {
     this._userService.getEstados().subscribe((res: any) => {
       this.estados = res.estados;
       this.vacantes = res.vacantes;
-      this.estados.unshift({'nombre': 'Todos los estados'})
-      this.vacantes.unshift({'descripcion': 'Todas las vacantes'})
+      this.estados.unshift({'nombre': 'Todos los estados', 'campo': ' '})
+      this.vacantes.unshift({'descripcion': 'Todas las vacantes', 'campo': ' '})
     });
   }
 
   mostrarDetalle(id: number) {
 
     this._userService.showDetalle(id).subscribe(res => {
+
       this.dialogService.open(ModalDetalleComponent,
         {
           header: 'Registro',
@@ -294,6 +295,44 @@ export class UsersComponent implements OnInit {
     this.searchValue = '';
     this.rangeDates = [];
     this.getRegistros();
+  }
+
+  descargarTerminados() {
+    this._userService.getCartasRenuncia().subscribe({
+      next: (res) => {
+        const blob = new Blob([res], {
+          type: 'application/zip'
+        });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url)
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se cuentan con cartas de renuncia.'
+        });
+      }
+    });
+  }
+
+  descargarAceptados() {
+    this._userService.getAceptados().subscribe({
+      next: (res) => {
+        const blob = new Blob([res], {
+          type: 'application/zip',
+        });
+        const url = window.URL.createObjectURL(blob);
+        window.open(url)
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Hubo un error al obtener el archivo.'
+        });
+      }
+    });
   }
 
   formatoFecha(fecha: Date): string {
