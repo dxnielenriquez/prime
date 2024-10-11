@@ -56,10 +56,17 @@ export class RegistroService {
   }
 
   public actualizarRegistro(id: any, body: any): Observable<any> {
-    return this._http.put(`$registro/${id}`, body, {
+    return this._http.put(`registro/${id}`, body, {
       headers: {noWeb: 'true'}
 
     })
+  }
+
+  public show(id: any): Observable<any> {
+    return this._http.get(`registro/${id}`, {
+      headers: {noWeb: 'true'}
+    })
+
   }
 
   public sendIne(cv: any, clave_ine: any): Observable<any> {

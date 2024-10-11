@@ -3,7 +3,7 @@ import {ToastModule} from "primeng/toast";
 import {StepsModule} from "primeng/steps";
 import {Button} from "primeng/button";
 import {MatStep, MatStepper} from "@angular/material/stepper";
-import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgIf, NgTemplateOutlet} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
 import {RegistroService} from "./registro.service";
@@ -13,12 +13,13 @@ import {ChipsModule} from "primeng/chips";
 import {CalendarModule} from "primeng/calendar";
 import {FileUploadModule} from "primeng/fileupload";
 import {CheckboxModule} from "primeng/checkbox";
-import {Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {environment} from "../../../environments/environment.development";
 import {ModalVisualizarComponent} from "../../share/components/modals/modal-visualizar/modal-visualizar.component";
 import {DialogService} from "primeng/dynamicdialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {TabViewModule} from "primeng/tabview";
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-registro',
@@ -29,7 +30,7 @@ import {TabViewModule} from "primeng/tabview";
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 3;
+  active: number = 1;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -41,6 +42,7 @@ export class RegistroComponent implements OnInit {
   estadosBeneficiario = [];
   estadosConstancia = [];
   query: any;
+  id: any;
   maxDate: any;
   sexo = []
   estadoCivil = []
@@ -57,7 +59,6 @@ export class RegistroComponent implements OnInit {
   base64textString: any;
   nuevoRegistro = true;
   storage = environment.api.storageUrl
-  // selectedImage: any;
   selectedIneImage: string | ArrayBuffer | null = null;
   columnas = [
     {id: 1, nombre: 'A+'},
@@ -88,7 +89,7 @@ export class RegistroComponent implements OnInit {
       numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      codigo_postal: ['', [Validators.minLength(5), Validators.pattern(/^([0-9])*$/)]],
+      codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.pattern(/^([0-9])*$/)]],
       estado_origen_id: ['', Validators.required],
       municipio_origen_id: [{value: '', disabled: true}, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
@@ -132,26 +133,65 @@ export class RegistroComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private messageService: MessageService,
     private domSanitizer: DomSanitizer,
-    private router: Router,
+    private activeRoute: ActivatedRoute,
     private dialogService: DialogService,
   ) {
+    this.activeRoute.queryParams.subscribe(res => {
+      this.query = res['id'];
+    })
     this.getDateTime();
     this.getEstados();
     this.getSexo();
     this.getEstadoCivil();
     this.getParentesco();
-    this.getMunicipiosSolicitante();
-    this.getMunicipiosBeneficiario();
   }
 
   ngOnInit() {
+    if (this.query) {
+      this.nuevoRegistro = false;
+      let decrypted = CryptoJS.AES.decrypt(this.query.toString(), environment.api.PW);
+      let result = this.fromhex(decrypted.toString());
+      let uint8Array = new Uint8Array(result);
+      let utf8Decoder = new TextDecoder()
+      this.id = utf8Decoder.decode(uint8Array)
 
+      this.registroService.show(this.id).subscribe(res => {
+        this.form.reset(res)
+
+        console.log(this.form)
+        this.getMunicipiosBeneficiario();
+        this.getMunicipiosSolicitante();
+        this.getMunicipios();
+        this.getMunicipiosConstancia();
+        this.selectedImage = environment.api.storageUrl + res.foto_perfil
+        this.selectedIneImage = environment.api.storageUrl + res.foto_credencial
+
+        setTimeout(() => {
+          this.nuevoRegistro = false;
+        }, 5000);
+      })
+    }
     this.items = [
       {label: 'Vacantes'},
       {label: 'Solicitante'},
       {label: 'Beneficiario'},
       {label: 'Documentación'}
     ];
+  }
+
+  fromhex(hex: string): number[] {
+    if (hex.length % 2 !== 0) {
+      throw new Error("Hex string should contain an even number of hex digits, one per byte");
+    }
+    const unsignedByteArray: number[] = [];
+    for (let i = 0; i < hex.length; i += 2) {
+      const h = hex.substring(i, i + 2);
+      if (!/^[0-9a-f]{2}$/i.test(h)) {
+        throw new Error(`Invalid hexdigit at offset ${i}`);
+      }
+      unsignedByteArray.push(parseInt(h, 16));
+    }
+    return unsignedByteArray;
   }
 
   getEstados() {
@@ -162,28 +202,31 @@ export class RegistroComponent implements OnInit {
         this.estadosOrigen = res.estados_origen;
         this.estadosBeneficiario = res.estados_origen;
         this.estadosConstancia = res.estados_origen;
-        if (this.query && (this.query.estado || this.query.vacante)) {
-          let estado = this.query.estado;
-          let vacante = this.query.vacante;
-
-          let controls = this.form.controls['vacantes'] as FormGroup;
-
-          if (estado) {
-            controls.controls['estado_id'].setValue(Number.parseInt(estado));
-          }
-
-          if (vacante) {
-            controls.controls['vacante_id'].setValue(Number.parseInt(vacante));
-          }
-
-          this.getMunicipios();
-        }
       },
       error: (err) => {
         console.error(err);
       }
     });
   }
+
+  // getMunicipios() {
+  //   let estadoId = this.form.get(`vacantes.estado_id`)?.value;
+  //   let municipio = this.form.get(`vacantes.municipio_id`);
+  //
+  //   if (!estadoId) {
+  //     municipio?.disable();
+  //     municipio?.reset();
+  //     return;
+  //   }
+  //   this.registroService.getMunicipios(estadoId).subscribe(res => {
+  //     this.municipios = res;
+  //     if (this.nuevoRegistro) {
+  //       municipio!.enable();
+  //       municipio!.reset();
+  //     }
+  //   });
+  //
+  // }
 
   getMunicipios() {
     let estadoId = this.form.get(`vacantes.estado_id`)?.value;
@@ -210,8 +253,11 @@ export class RegistroComponent implements OnInit {
 
     this.registroService.getMunicipios(estadoIdSolicitante).subscribe(res => {
       this.municipiosSolicitante = res;
-      municipioSolicitante!.enable();
-      municipioSolicitante!.reset();
+      if (this.nuevoRegistro) {
+        municipioSolicitante!.enable();
+        municipioSolicitante!.reset();
+      }
+
     });
   }
 
@@ -227,8 +273,10 @@ export class RegistroComponent implements OnInit {
 
     this.registroService.getMunicipios(estadoIdBeneficiario).subscribe(res => {
       this.municipiosBeneficiario = res;
-      municipioBeneficiario!.enable();
-      municipioBeneficiario!.reset();
+      if (this.nuevoRegistro) {
+        municipioBeneficiario!.enable();
+        municipioBeneficiario!.reset();
+      }
     });
   }
 
@@ -244,8 +292,11 @@ export class RegistroComponent implements OnInit {
 
     this.registroService.getMunicipios(estadoIdConstancia).subscribe(res => {
       this.municipiosConstancia = res;
-      municipioConstancia!.enable();
-      municipioConstancia!.reset();
+      if (this.nuevoRegistro) {
+        municipioConstancia!.enable();
+        municipioConstancia!.reset();
+      }
+
     });
   }
 
@@ -311,13 +362,14 @@ export class RegistroComponent implements OnInit {
     let file = files[0];
 
     if (!file) return;
-
+    console.log(file)
     if (file.size > 5000000) {
       this.messageService.add({
         severity: 'error',
         summary: 'Alto',
         detail: 'Imagen demasiado grande.'
       });
+      console.log('Imagen demasiado grande.')
       return;
     }
 
@@ -330,7 +382,6 @@ export class RegistroComponent implements OnInit {
           this.selectedImage = reader.result;
         }
       };
-      reader.onload = this.readerLoaded.bind(this);
       reader.readAsDataURL(file);
     }
 
@@ -338,15 +389,6 @@ export class RegistroComponent implements OnInit {
     archivoInput.value = '';
   }
 
-
-  readerLoadedProfile(readerEvt: any) {
-    this.base64textStringProfile = readerEvt.target.result;
-  }
-
-
-  readerLoaded(readerEvt: any) {
-    this.base64textString = readerEvt.target.result;
-  }
 
   usarDomicilio() {
     if (this.form.controls.beneficiario.get('usarDomicilio')!.value) {
@@ -415,6 +457,8 @@ export class RegistroComponent implements OnInit {
     if (this.constanciaFiscal) {
       formData.append('constanciaFiscal', this.constanciaFiscal);
     }
+    console.log(formData)
+
     this.registroService.crearRegistro(registro).subscribe({
       next: () => {
         const ine = registro.clave_ine;
@@ -427,6 +471,7 @@ export class RegistroComponent implements OnInit {
               detail: 'El registro se ha creado con éxito.',
               life: 30000
             });
+            console.log('El registro se ha creado con éxito.')
           },
           error: () => {
             this.messageService.add({
@@ -434,6 +479,7 @@ export class RegistroComponent implements OnInit {
               summary: 'Error los archivos',
               detail: 'Hubo un problema al subir sus archivos.'
             });
+            console.log('Hubo un problema al subir los archivos')
           }
         });
 
@@ -444,22 +490,77 @@ export class RegistroComponent implements OnInit {
           summary: 'Error al enviar',
           detail: 'Hubo un problema al registrarse.'
         });
+        console.log('Hubo un problema al enviar')
       }
 
     })
     ;
+    console.log(formData)
 
+  }
+
+
+  actualizarRegistro(registro: any) {
+    const formData = new FormData();
+    Object.keys(registro).forEach(key => {
+      formData.append(key, registro[key]);
+    });
+
+    if (this.cv) {
+      formData.append('cv', this.cv);
+    }
+
+    if (this.constanciaFiscal) {
+      formData.append('constanciaFiscal', this.constanciaFiscal);
+    }
+
+    const ine = registro.clave_ine;
+
+    this.registroService.actualizarRegistro(registro.id, formData).subscribe({
+      next: () => {
+        this.registroService.sendIne(formData, ine).subscribe({
+          next: () => {
+            window.location.reload();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Actualización exitosa',
+              detail: 'El registro se ha actualizado con éxito.',
+              life: 30000
+            });
+            console.log('El registro se ha actualizado con éxito.')
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error con los archivos',
+              detail: 'Hubo un problema al actualizar sus archivos.'
+            });
+            console.log('Hubo un problema al actualizar los archivos.')
+          }
+        });
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error al actualizar',
+          detail: 'Hubo un problema al actualizar el registro.'
+        });
+        console.log('Hubo un problema al actualizar el registro.')
+      }
+    });
   }
 
 
   onSubmit() {
 
-    if (!this.base64textString && this.nuevoRegistro) {
+    if (!this.selectedIneImage && this.nuevoRegistro) {
       this.messageService.add({
         severity: 'error',
         summary: 'Error al enviar',
         detail: 'La fote de la INE es requerida.'
+
       });
+      console.log('La fote de la INE es requerida.')
       return;
     }
     if (!this.cv && this.nuevoRegistro) {
@@ -468,8 +569,10 @@ export class RegistroComponent implements OnInit {
         summary: 'Error',
         detail: 'El CV es requerido.'
       });
+      console.log('El CV es requerido.')
       return;
     }
+
     const vacantesValue = this.form.get('vacantes')?.value;
     const solicitanteValue = this.form.get('solicitante')?.value;
     const documentacionValue = this.form.get('documentacion')?.value;
@@ -490,9 +593,23 @@ export class RegistroComponent implements OnInit {
     if (this.nuevoRegistro) {
       this.guardarRegistro(mergedObject);
     } else {
+
       // this.actualizarRegistro(registro);
     }
   }
+
+
+  isControlHasError(controlGroup: string, controlName: string, validationType: string): boolean {
+    const controlG = this.form.get(controlGroup);
+    const control = controlG?.get(controlName);
+
+    if (!control || !control.dirty) {
+      return false;
+    }
+
+    return control.hasError(validationType);
+  }
+
 
   next() {
     let form: any;
