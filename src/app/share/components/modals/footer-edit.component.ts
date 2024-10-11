@@ -23,34 +23,32 @@ export class FooterEditComponent {
   }
 
   abrir() {
-    const id = this.dataDialog.data.id
-    let utf8Encode = new TextEncoder();
-    let encoded = utf8Encode.encode(id)
-    let bArrHex = this.tohex(encoded);
-    let str = CryptoJS.enc.Hex.parse(bArrHex.toString())
-    let encrypted = CryptoJS.AES.encrypt(str, this.pwd);
-    const url = this.router.createUrlTree(['/vacantes/registro'], {
-      relativeTo: this.activatedRoute,
-      queryParams: {id: encrypted.toString()}
-    })
+    const id = this.dataDialog.data.id;
 
-    window.open(url.toString(), '_blank')
+    try {
+      const utf8Encode = new TextEncoder();
+      const encoded = utf8Encode.encode(id);
+      const bArrHex = this.tohex(encoded);
+      const str = CryptoJS.enc.Hex.parse(bArrHex);
+      const encrypted = CryptoJS.AES.encrypt(str, this.pwd).toString();
+      console.log(encoded)
+      console.log(bArrHex)
+      console.log(str)
+      console.log(encrypted)
+      const url = this.router.createUrlTree(['/vacantes/registro'], {
+        relativeTo: this.activatedRoute,
+        queryParams: {id: encrypted},
+      });
+
+      window.open(url.toString(), '_blank');
+    } catch (error) {
+      console.error('Error during encryption:', error);
+    }
   }
 
-  tohex(unsignedByteArray: string | any[] | Uint8Array) {
-    let hex = "";
-    for (let i = 0; i < unsignedByteArray.length; i++) {
-      let c = unsignedByteArray[i];
-      if (c < 0 || c > 255) {
-        throw "Value not an unsigned byte in array";
-      }
-      let h = c.toString();
-      if (h.length == 1) {
-        hex += "0" + h;
-      } else {
-        hex += h;
-      }
-    }
-    return hex;
+  tohex(unsignedByteArray: Uint8Array) {
+    return Array.from(unsignedByteArray)
+      .map((byte) => byte.toString(16).padStart(2, '0'))
+      .join('');
   }
 }
