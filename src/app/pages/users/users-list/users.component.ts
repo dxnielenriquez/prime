@@ -160,6 +160,7 @@ export class UsersComponent implements OnInit {
 
 
   ngOnInit() {
+
     this.getRegistros();
 
     this.columns = [

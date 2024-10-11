@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -10,10 +10,11 @@ export class RegistroService {
 
   constructor(
     private _http: HttpClient,
-  ) { }
+  ) {
+  }
 
   public getFecha(): Observable<any> {
-    return this._http.get('fecha' , {
+    return this._http.get('fecha', {
       headers: {noWeb: 'true'}
     })
   }
@@ -48,16 +49,17 @@ export class RegistroService {
     })
   }
 
-public crearRegistro(): Observable<any> {
-    return this._http.post('registro', {
+  public crearRegistro(body: any): Observable<any> {
+    return this._http.post('registro', body, {
       headers: {noWeb: 'true'}
     })
-}
+  }
 
-public sendIne(cv: any, clave_ine: any): Observable<any> {
+  public sendIne(cv: any, clave_ine: any): Observable<any> {
     return this._http.post(`enviar-cv?clave_ine=${clave_ine}`, cv, {
       headers: {noWeb: 'true'}
     })
-}
+  }
+
 
 }

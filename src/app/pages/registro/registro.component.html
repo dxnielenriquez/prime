@@ -184,7 +184,7 @@
               [options]="estadosOrigen"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
-              formControlName="estado_id"
+              formControlName="estado_origen_id"
               optionValue="id"
               [required]="true"
               (onChange)="getMunicipiosSolicitante()">
@@ -196,7 +196,7 @@
             <p-dropdown
               id="municipioSolicitante"
               [options]="municipiosSolicitante"
-              formControlName="municipio_id"
+              formControlName="municipio_origen_id"
               [style]="{'width': '100%'}"
               optionLabel="nombre"
               optionValue="id"
@@ -361,7 +361,7 @@
                alt="" (click)="imageIne.click()">
         </div>
         <p>Carga tu CV aqui</p>
-        <input id="cvInput"  type="file" accept="application/pdf"
+        <input formControlName="cv" id="cvInput"  type="file" accept="application/pdf"
                (change)="pdfSubmit($event)">
       </div>
 

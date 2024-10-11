@@ -15,11 +15,13 @@ import {FileUploadModule} from "primeng/fileupload";
 import {CheckboxModule} from "primeng/checkbox";
 import {ActivatedRoute, Router} from "@angular/router";
 import {environment} from "../../../environments/environment.development";
+import {ModalVisualizarComponent} from "../../share/components/modals/modal-visualizar/modal-visualizar.component";
+import {DialogService} from "primeng/dynamicdialog";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  providers: [MessageService],
   imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
@@ -49,7 +51,7 @@ export class RegistroComponent implements OnInit {
   imageURLProfile: any;
   selectedImage: string | ArrayBuffer | null = null;
   base64textString: any;
-  nuevoRegistro = false;
+  nuevoRegistro = true;
   storage = environment.api.storageUrl
   // selectedImage: any;
   selectedIneImage: string | ArrayBuffer | null = null;
@@ -83,8 +85,8 @@ export class RegistroComponent implements OnInit {
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
       codigo_postal: ['', [Validators.minLength(5), Validators.pattern(/^([0-9])*$/)]],
-      estado_id: ['', Validators.required],
-      municipio_id: [{value: '', disabled: true}, Validators.required],
+      estado_origen_id: ['', Validators.required],
+      municipio_origen_id: [{value: '', disabled: true}, Validators.required],
       correo: ['', [Validators.required, Validators.email]],
       telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
 
@@ -124,7 +126,9 @@ export class RegistroComponent implements OnInit {
     private _formBuilder: FormBuilder,
     private messageService: MessageService,
     private activatedRoute: ActivatedRoute,
+    private domSanitizer: DomSanitizer,
     private router: Router,
+    private dialogService: DialogService,
   ) {
     this.getDateTime();
     this.getEstados();
@@ -136,6 +140,7 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.items = [
       {label: 'Vacantes'},
       {label: 'Solicitante'},
@@ -188,8 +193,8 @@ export class RegistroComponent implements OnInit {
   }
 
   getMunicipiosSolicitante() {
-    let estadoIdSolicitante = this.form.get(`solicitante.estado_id`)?.value;
-    let municipioSolicitante = this.form.get(`solicitante.municipio_id`);
+    let estadoIdSolicitante = this.form.get(`solicitante.estado_origen_id`)?.value;
+    let municipioSolicitante = this.form.get(`solicitante.municipio_origen_id`);
 
     if (!estadoIdSolicitante) {
       municipioSolicitante?.disable();
@@ -317,7 +322,6 @@ export class RegistroComponent implements OnInit {
     if (!file) return;
 
     if (file.size > 5000000) {
-      console.log('error');
       this.messageService.add({
         severity: 'error',
         summary: 'Alto',
@@ -348,14 +352,14 @@ export class RegistroComponent implements OnInit {
     if (this.form.controls.beneficiario.get('usarDomicilio')!.value) {
       const solicitanteControls = this.form.controls.solicitante.controls;
       const beneficiarioControls = this.form.controls.beneficiario.controls;
-this.municipiosBeneficiario = this.municipiosSolicitante;
+      this.municipiosBeneficiario = this.municipiosSolicitante;
       beneficiarioControls.calle.setValue(solicitanteControls.calle.value);
       beneficiarioControls.numero_ext.setValue(solicitanteControls.numero_ext.value);
       beneficiarioControls.numero_int.setValue(solicitanteControls.numero_int.value);
       beneficiarioControls.colonia.setValue(solicitanteControls.colonia.value);
       beneficiarioControls.codigo_postal.setValue(solicitanteControls.codigo_postal.value);
-      beneficiarioControls.estado_id.setValue(solicitanteControls.estado_id.value);
-      beneficiarioControls.municipio_id.setValue(solicitanteControls.municipio_id.value);
+      beneficiarioControls.estado_id.setValue(solicitanteControls.estado_origen_id.value);
+      beneficiarioControls.municipio_id.setValue(solicitanteControls.municipio_origen_id.value);
     } else {
       const beneficiarioControls = this.form.controls.beneficiario.controls;
       beneficiarioControls.calle.reset();
@@ -380,10 +384,25 @@ this.municipiosBeneficiario = this.municipiosSolicitante;
     this.base64textStringProfile = '';
   }
 
-  verAviso() {
-    window.open(this.storage + 'aviso_de_privacidad.pdf', '_blank');
-  }
 
+  verAviso() {
+
+    const ruta = this.storage + 'aviso_de_privacidad.pdf';
+    let url = this.domSanitizer.bypassSecurityTrustResourceUrl(ruta);
+    this.dialogService.open(ModalVisualizarComponent,
+      {
+        header: 'Aviso de privacidad',
+        width: '79vw',
+        height: '90vh',
+        contentStyle: {padding: 0},
+        breakpoints: {
+          '991px': '80vw',
+          '640px': '90vw'
+        },
+        maximizable: true,
+        data: url
+      })
+  }
 
   guardarRegistro(registro: any) {
     const formData = new FormData();
@@ -395,39 +414,74 @@ this.municipiosBeneficiario = this.municipiosSolicitante;
     } else {
       console.warn('No se ha proporcionado ningún archivo CV.');
     }
-    this.registroService.crearRegistro().subscribe(res => {
-      this.limpiarFormulario();
-      this.router.navigate(['../vacantes/registro'], {relativeTo: this.activatedRoute});
-
-      if (res.result === 'ok') {
+    this.registroService.crearRegistro(registro).subscribe({
+      next: () => {
         const ine = registro.clave_ine;
-        this.registroService.sendIne(formData, ine).subscribe(ers => {
-          if (ers.result !== 'ok') {
-            console.error('Error al subir el Curriculum');
+        this.registroService.sendIne(formData, ine).subscribe({
+          next: () => {
+            window.location.reload();
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Registro exitoso',
+              detail: 'El registro se ha creado con éxito.',
+              life: 30000
+            });
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error los archivos',
+              detail: 'Hubo un problema al subir sus archivos.'
+            });
           }
         });
+
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error al enviar',
+          detail: 'Hubo un problema al registrarse.'
+        });
       }
-    },);
+
+    })
+    ;
+
   }
 
   onSubmit() {
 
-    console.log(this.form.value)
-
-
-
-    const registro = {
-      vacantes: this.form.get('vacantes')?.value,
-      solicitante: this.form.get('solicitante')?.value,
-      beneficiario: this.form.get('beneficiario')?.value,
-      documentacion: this.form.get('documentacion')?.value
+    if (!this.base64textString && this.nuevoRegistro) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error al enviar',
+        detail: 'La fote de la INE es requerida.'
+      });
+    }
+    if (!this.cv && this.nuevoRegistro) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'El CV es requerido.'
+      });
+      return;
+    }
+    const vacantesValue = this.form.get('vacantes')?.value;
+    const solicitanteValue = this.form.get('solicitante')?.value;
+    const documentacionValue = this.form.get('documentacion')?.value;
+    const beneficiarioValue = this.form.get('beneficiario')?.getRawValue();
+    const mergedObject = {
+      ...vacantesValue,
+      ...solicitanteValue,
+      ...documentacionValue,
+      beneficiario: beneficiarioValue
     };
 
 
 
-    // Guardar o actualizar el registro según corresponda
     if (this.nuevoRegistro) {
-      this.guardarRegistro(registro);
+      this.guardarRegistro(mergedObject);
     } else {
       // this.actualizarRegistro(registro);
     }
@@ -445,15 +499,6 @@ this.municipiosBeneficiario = this.municipiosSolicitante;
         break;
       case 3:
         form = this.form['controls'].documentacion;
-        if (!this.base64textString && this.nuevoRegistro) {
-          console.error('Para continuar, debes subir una foto de tu INE.');
-          return;
-        }
-
-        if (!this.cv && this.nuevoRegistro) {
-          console.error('Para continuar, debes subir tu curriculum.');
-          return;
-        }
         break;
       default:
         form = this.form['controls'].vacantes;
