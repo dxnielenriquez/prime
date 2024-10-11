@@ -223,6 +223,8 @@
               El número exterior es requerido.</small>
             <small *ngIf="isControlHasError('solicitante','calle','maxlength')" class="text-red-400">
               El tamaño máximo requerido es de 5 digitos.</small>
+            <small *ngIf="isControlHasError('solicitante','calle','pattern')" class="text-red-400">
+              Solo se permiten números.</small>
           </div>
 
 
@@ -231,6 +233,8 @@
               <input pInputText id="numInterior" formControlName="numero_int" class="w-full"/>
               <label for="numInterior">Número interior</label>
             </p-floatLabel>
+            <small *ngIf="isControlHasError('solicitante','numero_int','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 5 digitos.</small>
           </div>
 
           <div class="w-full">
@@ -240,6 +244,10 @@
             </p-floatLabel>
             <small *ngIf="isControlHasError('solicitante','colonia','required')" class="text-red-400">
               La colonia es requerida.</small>
+            <small *ngIf="isControlHasError('solicitante','colonia','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 3 digitos.</small>
+            <small *ngIf="isControlHasError('solicitante','colonia','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 128 digitos.</small>
           </div>
         </div>
 
@@ -252,6 +260,8 @@
             </p-floatLabel>
             <small *ngIf="isControlHasError('solicitante','codigo_postal','required')" class="text-red-400">
               El cp es para najib.</small>
+            <small *ngIf="isControlHasError('solicitante','codigo_postal','minlength')" class="text-red-400">
+              El tamaño requerido es de 5 digitos</small>
           </div>
 
           <div class="w-full">
@@ -291,15 +301,29 @@
         </div>
 
         <div class="  inputs gap-5 mt-5 ">
-          <p-floatLabel class="tamañotwo">
-            <input pInputText id="email" formControlName="correo" class="w-full"/>
-            <label for="email">Correo</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamañotwo">
+              <input pInputText id="email" formControlName="correo" class="w-full"/>
+              <label for="email">Correo</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('solicitante','correo','required')" class="text-red-400">
+              El correo es requerido.</small>
+            <small *ngIf="isControlHasError('solicitante','correo','email')" class="text-red-400">
+              Debe cumplir el formato de correo.</small>
+          </div>
 
-          <p-floatLabel class="tamañotwo">
-            <input pInputText id="celular" formControlName="telefono" class="w-full"/>
-            <label for="celular">Celular </label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamañotwo">
+              <input pInputText id="celular" formControlName="telefono" class="w-full"/>
+              <label for="celular">Celular </label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('solicitante','telefono','required')" class="text-red-400">
+              El celular es requerido.</small>
+            <small *ngIf="isControlHasError('solicitante','telefono','maxlength')" class="text-red-400">
+              Sólo se aceptan 10 dígitos.</small>
+            <small *ngIf="isControlHasError('solicitante','telefono','minlength')" class="text-red-400">
+              Sólo se aceptan 10 dígitos.</small>
+          </div>
         </div>
       </div>
     </form>
@@ -313,46 +337,96 @@
 
       <div class="w-full mt-2">
         <div class="  inputs gap-5 mt-5 ">
-          <p-floatLabel class="tamaño">
-            <input pInputText id="nombreBeneficiario" formControlName="nombre" class="w-full"/>
-            <label for="nombreBeneficiario">Nombre(s) beneficiario</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="nombreBeneficiario" formControlName="nombre" class="w-full"/>
+              <label for="nombreBeneficiario">Nombre(s) beneficiario</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','nombre','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','nombre','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 3 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','nombre','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 128 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','nombre','pattern')" class="text-red-400">
+              Solo se permiten letras.</small>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="paternoBeneficiario" formControlName="apellido_paterno" class="w-full"/>
-            <label for="paternoBeneficiario">Apellido Paterno </label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="paternoBeneficiario" formControlName="apellido_paterno" class="w-full"/>
+              <label for="paternoBeneficiario">Apellido Paterno </label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','apellido_paterno','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','apellido_paterno','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 3 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','apellido_paterno','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 128 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','apellido_paterno','pattern')" class="text-red-400">
+              Solo se permiten letras.</small>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="maternoBeneficiario" formControlName="apellido_materno" class="w-full"/>
-            <label for="maternoBeneficiario">Apellido Materno</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="maternoBeneficiario" formControlName="apellido_materno" class="w-full"/>
+              <label for="maternoBeneficiario">Apellido Materno</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','apellido_materno','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 3 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','apellido_materno','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 128 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','apellido_materno','pattern')" class="text-red-400">
+              Solo se permiten letras.</small>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="celularBeneficiario" formControlName="telefono" class="w-full"/>
-            <label for="celularBeneficiario">Celular beneficiario</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="celularBeneficiario" formControlName="telefono" class="w-full"/>
+              <label for="celularBeneficiario">Celular beneficiario</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','telefono','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','telefono','maxlength')" class="text-red-400">
+              Sólo se aceptan 10 dígitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','telefono','minlength')" class="text-red-400">
+              Sólo se aceptan 10 dígitos.</small>
+          </div>
         </div>
 
         <div class="w-full inputs gap-5 mt-5">
-          <p-floatLabel class="tamañotwo">
-            <p-dropdown
-              id="parentesco"
-              [options]="parentescos"
-              [style]="{'width': '100%'}"
-              formControlName="parentesco_id"
-              optionLabel="nombre"
-              optionValue="id"
-              [required]="true"
-              (onChange)="getParentesco()">
-            </p-dropdown>
-            <label for="parentesco">Parentesco</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamañotwo">
+              <p-dropdown
+                id="parentesco"
+                [options]="parentescos"
+                [style]="{'width': '100%'}"
+                formControlName="parentesco_id"
+                optionLabel="nombre"
+                optionValue="id"
+                [required]="true"
+                (onChange)="getParentesco()">
+              </p-dropdown>
+              <label for="parentesco">Parentesco</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','parentesco_id','required')" class="text-red-400">
+              El campo es requerido.</small>
+          </div>
 
-          <p-floatLabel class="tamañotwo">
-            <input pInputText id="rfc" formControlName="rfc" class="w-full"/>
-            <label for="rfc">RFC </label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamañotwo">
+              <input pInputText id="rfc" formControlName="rfc" class="w-full"/>
+              <label for="rfc">RFC </label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','rfc','required')" class="text-red-400">
+              El campo es requerido.
+            </small>
+
+            <p class="cursor-pointer text-blue-600" (click)="goToURl('https://www54.sat.gob.mx/curp/Consult')">
+              ¿No conoces tu RFC? Consúltalo aquí.
+            </p>
+          </div>
+
         </div>
 
         <div class="w-full  gap-5 mt-5">
@@ -368,61 +442,105 @@
         </div>
 
         <div class="  inputs gap-5 mt-5 ">
-          <p-floatLabel class="tamaño">
-            <input pInputText id="calleBeneficiario" formControlName="calle" class="w-full"/>
-            <label for="nombreBeneficiario">Calle</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="calleBeneficiario" formControlName="calle" class="w-full"/>
+              <label for="nombreBeneficiario">Calle</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','calle','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','calle','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 3 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','calle','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 128 digitos.</small>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="exteriorBeneficiario" formControlName="numero_ext" class="w-full"/>
-            <label for="paternoBeneficiario">Número exterior </label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="exteriorBeneficiario" formControlName="numero_ext" class="w-full"/>
+              <label for="paternoBeneficiario">Número exterior </label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','numero_ext','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','numero_ext','maxlength')" class="text-red-400">
+              Solo se aceptan 5 dígitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','numero_ext','type_number')" class="text-red-400">
+              Solo se aceptan nùmeros.</small>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="interiorBeneficiario" formControlName="numero_int" class="w-full"/>
-            <label for="maternoBeneficiario">Número interior</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="interiorBeneficiario" formControlName="numero_int" class="w-full"/>
+              <label for="maternoBeneficiario">Número interior</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','numero_int','maxlength')" class="text-red-400">
+              Solo se aceptan 5 dígitos</small>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="coloniaBeneficiario" formControlName="colonia" class="w-full"/>
-            <label for="coloniaBeneficiario">Colonia</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="coloniaBeneficiario" formControlName="colonia" class="w-full"/>
+              <label for="coloniaBeneficiario">Colonia</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','colonia','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','colonia','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 3 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','colonia','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 128 digitos.</small>
+          </div>
         </div>
 
         <div class="  inputs gap-5 mt-5 ">
-          <p-floatLabel class="tamaño">
-            <input pInputText id="cpBeneficiario" formControlName="codigo_postal" class="w-full"/>
-            <label for="cpBeneficiario">Código postal</label>
-          </p-floatLabel>
 
-          <p-floatLabel class="tamañotwo">
-            <p-dropdown
-              id="estadoBeneficiario"
-              [options]="estadosBeneficiario"
-              [style]="{'width': '100%'}"
-              optionLabel="nombre"
-              formControlName="estado_id"
-              optionValue="id"
-              [required]="true"
-              (onChange)="getMunicipiosBeneficiario()">
-            </p-dropdown>
-            <label for="estadoBeneficiario">Estado</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="cpBeneficiario" formControlName="codigo_postal" class="w-full"/>
+              <label for="cpBeneficiario">Código postal</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','codigo_postal','required')" class="text-red-400">
+              El campo es requerido.</small>
+            <small *ngIf="isControlHasError('beneficiario','codigo_postal','minlength')" class="text-red-400">
+              El tamaño mínimo requerido es de 5 digitos.</small>
+            <small *ngIf="isControlHasError('beneficiario','codigo_postal','maxlength')" class="text-red-400">
+              El tamaño máximo requerido es de 5 digitos.</small>
+          </div>
 
-          <p-floatLabel class="tamañotwo">
-            <p-dropdown
-              id="municipioBeneficiario"
-              [options]="municipiosBeneficiario"
-              [style]="{'width': '100%'}"
-              optionLabel="nombre"
-              formControlName="municipio_id"
-              optionValue="id"
-              [required]="true"
-            >
-            </p-dropdown>
-            <label for="municipioBeneficiario">Municipio</label>
-          </p-floatLabel>
+          <div class="w-full">
+            <p-floatLabel class="tamañotwo">
+              <p-dropdown
+                id="estadoBeneficiario"
+                [options]="estadosBeneficiario"
+                [style]="{'width': '100%'}"
+                optionLabel="nombre"
+                formControlName="estado_id"
+                optionValue="id"
+                [required]="true"
+                (onChange)="getMunicipiosBeneficiario()">
+              </p-dropdown>
+              <label for="estadoBeneficiario">Estado</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','estado_id','required')" class="text-red-400">
+              El campo es requerido.</small>
+          </div>
 
+          <div class="w-full">
+            <p-floatLabel class="tamañotwo">
+              <p-dropdown
+                id="municipioBeneficiario"
+                [options]="municipiosBeneficiario"
+                [style]="{'width': '100%'}"
+                optionLabel="nombre"
+                formControlName="municipio_id"
+                optionValue="id"
+                [required]="true"
+              >
+              </p-dropdown>
+              <label for="municipioBeneficiario">Municipio</label>
+            </p-floatLabel>
+            <small *ngIf="isControlHasError('beneficiario','municipio_id','required')" class="text-red-400">
+              El campo es requerido.</small>
+          </div>
         </div>
 
       </div>
@@ -460,25 +578,63 @@
 
           <div class="w-full mt-2">
             <div class="  inputs gap-5 mt-5 ">
-              <p-floatLabel class="tamaño">
-                <input pInputText id="claveElector" formControlName="clave_ine" class="w-full"/>
-                <label for="claveElector">Clave de elector</label>
-              </p-floatLabel>
+              <div class="w-full">
+                <p-floatLabel class="tamaño">
+                  <input pInputText id="claveElector" formControlName="clave_ine" class="w-full"/>
+                  <label for="claveElector">Clave de elector</label>
+                </p-floatLabel>
+                <small *ngIf="isControlHasError('documentacion','clave_ine','required')" class="text-red-400">
+                  El campo es requerido.</small>
+                <small
+                  *ngIf="isControlHasError('documentacion','clave_ine','minlength') || isControlHasError('documentacion', 'clave_ine', 'maxlength')"
+                  class="text-red-400">
+                  Sólo se aceptan 18 dígitos</small>
+              </div>
 
-              <p-floatLabel class="tamaño">
-                <input pInputText id="curp" formControlName="curp" class="w-full"/>
-                <label for="curp">CURP</label>
-              </p-floatLabel>
+              <div class="w-full">
+                <p-floatLabel class="tamaño">
+                  <input pInputText id="curp" formControlName="curp" class="w-full"/>
+                  <label for="curp">CURP</label>
+                </p-floatLabel>
+                <small *ngIf="isControlHasError('documentacion','curp','required')" class="text-red-400">
+                  El campo es requerido.
+                </small>
 
-              <p-floatLabel class="tamaño">
-                <input pInputText id="rfcfinal" formControlName="rfc" class="w-full"/>
-                <label for="rfcfinal">RFC</label>
-              </p-floatLabel>
+                <p class="cursor-pointer text-blue-600" (click)="goToURl('https://www.gob.mx/curp/')">
+                  ¿No conoces tu CURP? Consúltala aquí.
+                </p>
+              </div>
 
-              <p-floatLabel class="tamaño">
-                <input pInputText id="numSeguro" formControlName="nss" class="w-full"/>
-                <label for="numSeguro">Número de seguro social</label>
-              </p-floatLabel>
+
+              <div class="w-full">
+                <p-floatLabel class="tamaño">
+                  <input pInputText id="rfcfinal" formControlName="rfc" class="w-full"/>
+                  <label for="rfcfinal">RFC</label>
+                </p-floatLabel>
+                <small *ngIf="isControlHasError('documentacion', 'rfc', 'required')" class="text-red-400">
+                  El campo es requerido.
+                </small>
+
+                <p class="cursor-pointer text-blue-600" (click)="goToURl('https://www54.sat.gob.mx/curp/Consult')">
+                  ¿No conoces tu RFC? Consúltalo aquí.
+                </p>
+              </div>
+
+              <div class="w-full">
+                <p-floatLabel class="tamaño">
+                  <input pInputText id="numSeguro" formControlName="nss" class="w-full"/>
+                  <label for="numSeguro">Número de seguro social</label>
+                </p-floatLabel>
+                <small *ngIf="isControlHasError('documentacion', 'nss', 'required')" class="text-red-400">
+                  El campo es requerido.
+                </small>
+
+                <p class="cursor-pointer text-blue-600"
+                   (click)="goToURl('http://www.imss.gob.mx/faq/no-recuerdo-mi-nss')">
+                  ¿No conoces tu Número de Seguro Social? Consúltalo aquí.
+                </p>
+              </div>
+
             </div>
 
           </div>
@@ -515,39 +671,62 @@
           </div>
 
           <div class="  inputs gap-5 mt-5 ">
-            <p-floatLabel class="tamaño">
-              <input pInputText id="cpConstanciaFiscal" formControlName="codigo_postal_constancia" class="w-full"/>
-              <label for="cpConstanciaFiscal">Código postal constancia</label>
-            </p-floatLabel>
 
-            <p-floatLabel class="tamañotwo">
-              <p-dropdown
-                id="estadoConstanciaFiscal"
-                [options]="estadosConstancia"
-                [style]="{'width': '100%'}"
-                optionLabel="nombre"
-                formControlName="estado_id_constancia"
-                optionValue="id"
-                [required]="true"
-                (onChange)="getMunicipiosConstancia()">
-              </p-dropdown>
-              <label for="estadoConstanciaFiscal">Estado</label>
-            </p-floatLabel>
+            <div class="w-full">
+              <p-floatLabel class="tamaño">
+                <input pInputText id="cpConstanciaFiscal" formControlName="codigo_postal_constancia" class="w-full"/>
+                <label for="cpConstanciaFiscal">Código postal constancia</label>
+              </p-floatLabel>
+              <small *ngIf="isControlHasError('documentacion', 'codigo_postal_constancia', 'required')"
+                     class="text-red-400">
+                El campo es requerido.
+              </small>
+              <small
+                *ngIf="isControlHasError('documentacion', 'codigo_postal_constancia', 'minlength') || isControlHasError('documentacion', 'codigo_postal_constancia', 'maxlength')"
+                class="text-red-400">
+                El tamaño requerido es de 5 digitos.
+              </small>
+            </div>
 
-            <p-floatLabel class="tamañotwo">
-              <p-dropdown
-                id="municipioConstancia"
-                [options]="municipiosConstancia"
-                [style]="{'width': '100%'}"
-                optionLabel="nombre"
-                formControlName="municipio_id_constancia"
-                optionValue="id"
-                [required]="true"
-              >
-              </p-dropdown>
-              <label for="municipioConstancia">Municipio</label>
-            </p-floatLabel>
+            <div class="w-full">
+              <p-floatLabel class="tamañotwo">
+                <p-dropdown
+                  id="estadoConstanciaFiscal"
+                  [options]="estadosConstancia"
+                  [style]="{'width': '100%'}"
+                  optionLabel="nombre"
+                  formControlName="estado_id_constancia"
+                  optionValue="id"
+                  [required]="true"
+                  (onChange)="getMunicipiosConstancia()">
+                </p-dropdown>
+                <label for="estadoConstanciaFiscal">Estado</label>
+              </p-floatLabel>
+              <small *ngIf="isControlHasError('documentacion', 'estado_id_constancia', 'required')"
+                     class="text-red-400">
+                El campo es requerido.
+              </small>
+            </div>
 
+            <div class="w-full">
+              <p-floatLabel class="tamañotwo">
+                <p-dropdown
+                  id="municipioConstancia"
+                  [options]="municipiosConstancia"
+                  [style]="{'width': '100%'}"
+                  optionLabel="nombre"
+                  formControlName="municipio_id_constancia"
+                  optionValue="id"
+                  [required]="true"
+                >
+                </p-dropdown>
+                <label for="municipioConstancia">Municipio</label>
+              </p-floatLabel>
+              <small *ngIf="isControlHasError('documentacion', 'municipio_id_constancia', 'required')"
+                     class="text-red-400">
+                El campo es requerido.
+              </small>
+            </div>
           </div>
         </p-tabPanel>
 

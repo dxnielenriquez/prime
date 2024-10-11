@@ -3,7 +3,7 @@ import {ToastModule} from "primeng/toast";
 import {StepsModule} from "primeng/steps";
 import {Button} from "primeng/button";
 import {MatStep, MatStepper} from "@angular/material/stepper";
-import {AbstractControl, FormBuilder, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgClass, NgIf, NgTemplateOutlet} from "@angular/common";
 import {DropdownModule} from "primeng/dropdown";
 import {RegistroService} from "./registro.service";
@@ -30,7 +30,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 1;
+  active: number = 3;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -103,11 +103,11 @@ export class RegistroComponent implements OnInit {
       telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
       parentesco_id: ['', Validators.required],
       rfc: ['', [Validators.required, Validators.minLength(13)]],
-      calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5)]],
-      numero_int: ['', [Validators.minLength(1), Validators.maxLength(5)]],
+      calle: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
+      numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      codigo_postal: ['', [Validators.minLength(5)]],
+      codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5 )]],
       estado_id: ['', Validators.required],
       municipio_id: [{value: '', disabled: true}, Validators.required],
       usarDomicilio: [false],
@@ -119,7 +119,7 @@ export class RegistroComponent implements OnInit {
       curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18)]],
       rfc: ['', [Validators.required, Validators.minLength(12)]],
       nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-      codigo_postal_constancia: ['', Validators.required],
+      codigo_postal_constancia: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5 )]],
       estado_id_constancia: ['', Validators.required],
       municipio_id_constancia: [{value: '', disabled: true}, Validators.required],
       aviso: [false, Validators.required,]
@@ -553,6 +553,20 @@ export class RegistroComponent implements OnInit {
 
   onSubmit() {
 
+    Object.keys(this.form.controls).forEach(key => {
+      const control = this.form.get(key);
+      if (control instanceof FormGroup) {
+        Object.keys(control.controls).forEach(innerKey => {
+          control.get(innerKey)?.markAsDirty();
+          control.get(innerKey)?.markAsTouched();
+        });
+      } else {
+        control?.markAsDirty();
+        control?.markAsTouched();
+      }
+    });
+
+
     if (!this.selectedIneImage && this.nuevoRegistro) {
       this.messageService.add({
         severity: 'error',
@@ -647,6 +661,10 @@ export class RegistroComponent implements OnInit {
     if (this.active > 0) {
       this.active -= 1;
     }
+  }
+
+  goToURl(url: string) {
+    open(url)
   }
 
 }
