@@ -29,7 +29,7 @@ export class ModalDetalleComponent {
   perfil = environment.api.storageUrl + 'imagenes_perfiles/'
   credencial = environment.api.storageUrl + 'imagenes_credenciales/'
 
-  constructor(private configDialog: DynamicDialogConfig) {
+  constructor(configDialog: DynamicDialogConfig) {
     this.data = configDialog.data;
   }
 

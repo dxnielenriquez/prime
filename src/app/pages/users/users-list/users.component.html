@@ -30,7 +30,7 @@
                        [style]="{'width': '100%'}" pInputText
                        placeholder="Buscar" type="text"/>
             </span>
-            <button (click)="clearTable(dt2)" *ngxPermissionsOnly="'web.baja'"
+            <button (click)="clearTable(dt2)" 
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
                     icon="pi pi-user-plus" label="Add New"
                     pButton
@@ -72,6 +72,7 @@
                   [readonlyInput]="true"
                   [showIcon]="true"
                   [stepYearPicker]="false"
+                  dateFormat="dd-mm-yy"
                   [style]="{'width': '100%'}"
                   id="calendar"
                   selectionMode="range"/>
@@ -157,7 +158,7 @@
                 </ng-container>
                 <ng-template #constancia>
                   <ng-container *ngIf="item.id == 'constancia'; else documentosIE">
-                    <div (click)="mostrarPDF(1 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
+                    <div (click)="mostrarPDF(2 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
                          class="p-menuitem-link">
                       <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
