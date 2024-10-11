@@ -55,6 +55,13 @@ export class RegistroService {
     })
   }
 
+  public actualizarRegistro(id: any, body: any): Observable<any> {
+    return this._http.put(`$registro/${id}`, body, {
+      headers: {noWeb: 'true'}
+
+    })
+  }
+
   public sendIne(cv: any, clave_ine: any): Observable<any> {
     return this._http.post(`enviar-cv?clave_ine=${clave_ine}`, cv, {
       headers: {noWeb: 'true'}

@@ -122,3 +122,47 @@
     margin-top: .7rem;
   }
 }
+
+
+.cargarArchivos {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Espacio entre los elementos */
+  width: 100%; /* Ocupa todo el ancho */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.cargarArchivos p {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.cargarArchivos input[type="file"] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 100%; /* Ajusta el ancho máximo del input */
+}
+
+@media screen and (min-width: 768px) {
+  .cargarArchivos {
+    flex-direction: row; /* En pantallas más grandes, coloca los elementos en una fila */
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan a la siguiente línea si es necesario */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos */
+  }
+
+  .cargarArchivos p, .cargarArchivos input[type="file"] {
+    width: 48%; /* Los elementos ocuparán el 48% del ancho en pantallas más grandes */
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .cargarArchivos {
+    flex-direction: column; /* En pantallas pequeñas, mantén los elementos en columna */
+  }
+
+  .cargarArchivos input[type="file"] {
+    width: 100%; /* Los inputs ocupan todo el ancho disponible */
+  }
+}

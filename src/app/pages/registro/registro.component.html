@@ -69,7 +69,7 @@
       <div class="seccionImg">
         <span class="title-image">Imagen de perfil</span>
         <input class="archivos" type="file" #fileInput style="display: none"
-               accept="image/jpeg, image/jpg, image/png" (change)="imageSubmitProfile($event)">
+               accept="image/jpeg, image/jpg, image/png" (change)="imageSubmit($event, false)">
         <img class="image-profile mt-1"
              [src]="selectedImage || getUrl(imageProfile, imageURLProfile, './assets/images/profile.png') + ((imageProfile)? '': ('?' + code))"
              alt="" (click)="fileInput.click()">
@@ -140,6 +140,7 @@
             <p-calendar
               [style]="{'width': '100%'}"
               formControlName="fecha_nacimiento"
+              [dateFormat]="'dd-mm-yy'"
               [iconDisplay]="'input'"
               [showIcon]="true"
               [readonlyInput]="true"
@@ -351,53 +352,128 @@
         <h3>Documentación requerida </h3>
       </div>
 
-      <div class="formulario-group ine mt-3">
-        <div class="ineImg">
-          <span class="title-image">Imagen de la INE (Lado frontal)</span>
-          <input class="archivos" type="file" #imageIne style="display: none"
-                 accept="image/jpeg, image/jpg, image/png" (change)="imageSubmit($event)">
-          <img width="10%" [ngClass]="image ? 'image-ine':'image-profile'"
-               [src]="selectedIneImage || getUrl(image, imageURL, './assets/images/img.png') + ((image)? '': ('?' + code))"
-               alt="" (click)="imageIne.click()">
-        </div>
-        <p>Carga tu CV aqui</p>
-        <input formControlName="cv" id="cvInput"  type="file" accept="application/pdf"
-               (change)="pdfSubmit($event)">
-      </div>
+      <p-tabView>
+        <p-tabPanel header="Documentación personal">
+          <div class="formulario-group ine mt-3">
+            <div class="ineImg">
+              <span class="title-image">Imagen de la INE (Lado frontal)</span>
+              <input class="archivos" type="file" #imageIne style="display: none"
+                     accept="image/jpeg, image/jpg, image/png" (change)="imageSubmit($event, true)">
+              <img width="10%" [ngClass]="image ? 'image-ine':'image-profile'"
+                   [src]="selectedIneImage || getUrl(image, imageURL, './assets/images/img.png') + ((image)? '': ('?' + code))"
+                   alt="" (click)="imageIne.click()">
+            </div>
 
-      <div class="w-full  gap-5 mt-5">
-        <div class="card flex justify-content-center">
-          <p-checkbox
-            [binary]="true"
-            inputId="binary"/>
-          <a href="javascript:" (click)="verAviso()">Aviso de privacidad</a>
-        </div>
-      </div>
+          </div>
 
-      <div class="w-full mt-2">
-        <div class="  inputs gap-5 mt-5 ">
-          <p-floatLabel class="tamaño">
-            <input pInputText id="claveElector" formControlName="clave_ine" class="w-full"/>
-            <label for="claveElector">Clave de elector</label>
-          </p-floatLabel>
+          <div class="w-full  gap-5 mt-5">
+            <div class="card flex justify-content-center">
+              <p-checkbox
+                [binary]="true"
+                inputId="binary"/>
+              <a href="javascript:" (click)="verAviso()">Aviso de privacidad</a>
+            </div>
+          </div>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="curp" formControlName="curp" class="w-full"/>
-            <label for="curp">CURP</label>
-          </p-floatLabel>
+          <div class="w-full mt-2">
+            <div class="  inputs gap-5 mt-5 ">
+              <p-floatLabel class="tamaño">
+                <input pInputText id="claveElector" formControlName="clave_ine" class="w-full"/>
+                <label for="claveElector">Clave de elector</label>
+              </p-floatLabel>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="rfcfinal" formControlName="rfc" class="w-full"/>
-            <label for="rfcfinal">RFC</label>
-          </p-floatLabel>
+              <p-floatLabel class="tamaño">
+                <input pInputText id="curp" formControlName="curp" class="w-full"/>
+                <label for="curp">CURP</label>
+              </p-floatLabel>
 
-          <p-floatLabel class="tamaño">
-            <input pInputText id="numSeguro" formControlName="nss" class="w-full"/>
-            <label for="numSeguro">Número de seguro social</label>
-          </p-floatLabel>
-        </div>
+              <p-floatLabel class="tamaño">
+                <input pInputText id="rfcfinal" formControlName="rfc" class="w-full"/>
+                <label for="rfcfinal">RFC</label>
+              </p-floatLabel>
 
-      </div>
+              <p-floatLabel class="tamaño">
+                <input pInputText id="numSeguro" formControlName="nss" class="w-full"/>
+                <label for="numSeguro">Número de seguro social</label>
+              </p-floatLabel>
+            </div>
+
+          </div>
+        </p-tabPanel>
+        <p-tabPanel header="Constancia Fiscal">
+
+          <div class="cargarArchivos">
+
+
+
+            <p-fileUpload
+              mode="advanced"
+              chooseLabel="Currículum vitae"
+              chooseIcon="pi pi-upload"
+              name="cv"
+              url="https://www.primefaces.org/cdn/api/upload.php"
+              accept="application/pdf"
+              maxFileSize="1000000"
+              showUploadButton="false"
+              showCancelButton="false"
+              (onSelect)="pdfSubmit($event, true)"/>
+
+            <p-fileUpload
+              mode="advanced"
+              chooseLabel="Constancia fiscal"
+              chooseIcon="pi pi-upload"
+              name="constancia"
+              accept="application/pdf"
+              maxFileSize="1000000"
+              showUploadButton="false"
+              showCancelButton="false"
+              (onSelect)="pdfSubmit($event, false)"/>
+
+
+          </div>
+
+          <div class="  inputs gap-5 mt-5 ">
+            <p-floatLabel class="tamaño">
+              <input pInputText id="cpConstanciaFiscal" formControlName="codigo_postal_constancia" class="w-full"/>
+              <label for="cpConstanciaFiscal">Código postal constancia</label>
+            </p-floatLabel>
+
+            <p-floatLabel class="tamañotwo">
+              <p-dropdown
+                id="estadoConstanciaFiscal"
+                [options]="estadosConstancia"
+                [style]="{'width': '100%'}"
+                optionLabel="nombre"
+                formControlName="estado_id_constancia"
+                optionValue="id"
+                [required]="true"
+                (onChange)="getMunicipiosConstancia()">
+              </p-dropdown>
+              <label for="estadoConstanciaFiscal">Estado</label>
+            </p-floatLabel>
+
+            <p-floatLabel class="tamañotwo">
+              <p-dropdown
+                id="municipioConstancia"
+                [options]="municipiosConstancia"
+                [style]="{'width': '100%'}"
+                optionLabel="nombre"
+                formControlName="municipio_id_constancia"
+                optionValue="id"
+                [required]="true"
+              >
+              </p-dropdown>
+              <label for="municipioConstancia">Municipio</label>
+            </p-floatLabel>
+
+          </div>
+
+        </p-tabPanel>
+
+      </p-tabView>
+
+
+
     </form>
   </div>
 
