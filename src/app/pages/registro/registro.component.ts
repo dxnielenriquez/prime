@@ -52,14 +52,14 @@ export class RegistroComponent implements OnInit {
   code = '';
   cv: File | null = null;
   constanciaFiscal: File | null = null;
-  base64textStringProfile: any;
   imageProfile: any;
   imageURLProfile: any;
   selectedImage: string | ArrayBuffer | null = null;
-  base64textString: any;
   nuevoRegistro = true;
   storage = environment.api.storageUrl
   selectedIneImage: string | ArrayBuffer | null = null;
+  update_foto_perfil = false;
+  update_foto_credencial = false;
   columnas = [
     {id: 1, nombre: 'A+'},
     {id: 2, nombre: 'A-'},
@@ -107,7 +107,7 @@ export class RegistroComponent implements OnInit {
       numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5 )]],
+      codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
       estado_id: ['', Validators.required],
       municipio_id: [{value: '', disabled: true}, Validators.required],
       usarDomicilio: [false],
@@ -119,14 +119,13 @@ export class RegistroComponent implements OnInit {
       curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18)]],
       rfc: ['', [Validators.required, Validators.minLength(12)]],
       nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
-      codigo_postal_constancia: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5 )]],
+      codigo_postal_constancia: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
       estado_id_constancia: ['', Validators.required],
       municipio_id_constancia: [{value: '', disabled: true}, Validators.required],
       aviso: [false, Validators.required,]
 
     }),
   });
-
 
   constructor(
     private registroService: RegistroService,
@@ -366,8 +365,10 @@ export class RegistroComponent implements OnInit {
       reader.onloadend = () => {
         if (ine) {
           this.selectedIneImage = reader.result;
+          this.update_foto_credencial = true;
         } else {
           this.selectedImage = reader.result;
+          this.update_foto_perfil = true;
         }
       };
       reader.readAsDataURL(file);
@@ -400,18 +401,6 @@ export class RegistroComponent implements OnInit {
       beneficiarioControls.estado_id.reset();
       beneficiarioControls.municipio_id.reset();
     }
-  }
-
-
-  limpiarFormulario() {
-    this.form.reset();
-    this.form.get('documentacion.aviso')!.reset();
-    this.image = '';
-    this.imageProfile = '';
-    this.imageURL = '';
-    this.imageURLProfile = '';
-    this.base64textString = '';
-    this.base64textStringProfile = '';
   }
 
 
@@ -504,7 +493,7 @@ export class RegistroComponent implements OnInit {
 
     const ine = registro.clave_ine;
 
-    this.registroService.actualizarRegistro(this.id, formData).subscribe({
+    this.registroService.actualizarRegistro(this.id, registro).subscribe({
       next: () => {
         this.registroService.sendIne(formData, ine).subscribe({
           next: () => {
@@ -562,7 +551,6 @@ export class RegistroComponent implements OnInit {
         detail: 'La fote de la INE es requerida.'
 
       });
-      console.log('La fote de la INE es requerida.')
       return;
     }
     if (!this.cv && this.nuevoRegistro) {
@@ -571,13 +559,12 @@ export class RegistroComponent implements OnInit {
         summary: 'Error',
         detail: 'El CV es requerido.'
       });
-      console.log('El CV es requerido.')
       return;
     }
 
-    const vacantesValue = this.form.get('vacantes')?.value;
-    const solicitanteValue = this.form.get('solicitante')?.value;
-    const documentacionValue = this.form.get('documentacion')?.value;
+    const vacantesValue = this.form.get('vacantes')?.getRawValue();
+    const solicitanteValue = this.form.get('solicitante')?.getRawValue();
+    const documentacionValue = this.form.get('documentacion')?.getRawValue();
     const beneficiarioValue = this.form.get('beneficiario')?.getRawValue();
     const mergedObject = {
       ...vacantesValue,
@@ -586,9 +573,8 @@ export class RegistroComponent implements OnInit {
       beneficiario: beneficiarioValue,
       foto_perfil: this.selectedImage,
       foto_credencial: this.selectedIneImage,
-      update_foto_perfil: this.selectedImage,
-      update_foto_credencial: this.selectedIneImage,
-
+      update_foto_perfil: this.update_foto_perfil,
+      update_foto_credencial: this.update_foto_credencial,
 
     };
 
