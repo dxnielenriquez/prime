@@ -30,7 +30,7 @@ import * as CryptoJS from 'crypto-js';
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 3;
+  active: number = 0;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -588,6 +588,7 @@ export class RegistroComponent implements OnInit {
       foto_credencial: this.selectedIneImage,
       update_foto_perfil: this.selectedImage,
       update_foto_credencial: this.selectedIneImage,
+
 
     };
 
