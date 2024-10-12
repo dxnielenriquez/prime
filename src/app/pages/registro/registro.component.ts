@@ -209,37 +209,25 @@ export class RegistroComponent implements OnInit {
     });
   }
 
-  // getMunicipios() {
-  //   let estadoId = this.form.get(`vacantes.estado_id`)?.value;
-  //   let municipio = this.form.get(`vacantes.municipio_id`);
-  //
-  //   if (!estadoId) {
-  //     municipio?.disable();
-  //     municipio?.reset();
-  //     return;
-  //   }
-  //   this.registroService.getMunicipios(estadoId).subscribe(res => {
-  //     this.municipios = res;
-  //     if (this.nuevoRegistro) {
-  //       municipio!.enable();
-  //       municipio!.reset();
-  //     }
-  //   });
-  //
-  // }
-
   getMunicipios() {
     let estadoId = this.form.get(`vacantes.estado_id`)?.value;
     let municipio = this.form.get(`vacantes.municipio_id`);
 
-    if (estadoId) {
-      this.registroService.getMunicipios(estadoId).subscribe(res => {
-        this.municipios = res;
+    if (!estadoId) {
+      municipio?.disable();
+      municipio?.reset();
+      return;
+    }
+    this.registroService.getMunicipios(estadoId).subscribe(res => {
+      this.municipios = res;
+      if (this.nuevoRegistro) {
         municipio!.enable();
         municipio!.reset();
-      });
-    }
+      }
+    });
+
   }
+
 
   getMunicipiosSolicitante() {
     let estadoIdSolicitante = this.form.get(`solicitante.estado_origen_id`)?.value;
@@ -516,7 +504,7 @@ export class RegistroComponent implements OnInit {
 
     const ine = registro.clave_ine;
 
-    this.registroService.actualizarRegistro(registro.id, formData).subscribe({
+    this.registroService.actualizarRegistro(this.id, formData).subscribe({
       next: () => {
         this.registroService.sendIne(formData, ine).subscribe({
           next: () => {
@@ -608,8 +596,10 @@ export class RegistroComponent implements OnInit {
       this.guardarRegistro(mergedObject);
     } else {
 
-      // this.actualizarRegistro(registro);
+      this.actualizarRegistro(mergedObject);
     }
+    console.log(mergedObject);
+
   }
 
 
