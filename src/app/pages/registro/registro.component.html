@@ -772,7 +772,8 @@
 
     <p-button (click)="back()" [disabled]="active === 0" label="Regresar" icon="pi pi-arrow-left"/>
 
-    <p-button (click)="onSubmit()" *ngIf="active === 3; else nextButton" label="Registrarse" icon="pi pi-file-arrow-up"
+    <p-button (click)="onSubmit()" *ngIf="active === 3; else nextButton"   [label]="nuevoRegistro ? 'Registrarse' : 'Actualizar'"
+              icon="pi pi-file-arrow-up"
               iconPos="right" [disabled]="loading"/>
     <ng-template #nextButton>
       <p-button (click)="next()" label="Continuar" icon="pi pi-arrow-right" iconPos="right"/>
