@@ -20,17 +20,18 @@ import {DialogService} from "primeng/dynamicdialog";
 import {DomSanitizer} from "@angular/platform-browser";
 import {TabViewModule} from "primeng/tabview";
 import * as CryptoJS from 'crypto-js';
+import {InputMaskModule} from "primeng/inputmask";
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass, TabViewModule],
+  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass, TabViewModule, InputMaskModule],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 0;
+  active: number = 1;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -84,9 +85,9 @@ export class RegistroComponent implements OnInit {
       sexo_id: ['', Validators.required],
       tipo_sangre_id: ['', Validators.required],
       estado_civil_id: ['', Validators.required],
-      fecha_nacimiento: ['', [Validators.required]],
+      fecha_nacimiento: ['', [Validators.required, this.min18YearsValidator]],
       calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), ]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
       codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.pattern(/^([0-9])*$/)]],
@@ -102,9 +103,9 @@ export class RegistroComponent implements OnInit {
       apellido_materno: ['', [Validators.minLength(3), Validators.maxLength(128), Validators.pattern(/^[A-Za-z\s\xF1\xD1]+$/)]],
       telefono: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
       parentesco_id: ['', Validators.required],
-      rfc: ['', [Validators.required, Validators.minLength(13)]],
+      rfc: ['', [Validators.required, Validators.minLength(13), Validators.pattern(/^([A-ZÑ&]{3,4}) ?(\d{2})(\d{2})(\d{2}) ?([A-Z\d]{3})?$/i)]],
       calle: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), ]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
       codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
@@ -115,8 +116,8 @@ export class RegistroComponent implements OnInit {
     }),
     documentacion: this._formBuilder.group({
       clave_ine: ['', [Validators.required, Validators.minLength(18), Validators.maxLength(18)]],
-      curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18)]],
-      rfc: ['', [Validators.required, Validators.minLength(12)]],
+      curp: ['', [Validators.required, Validators.minLength(18), Validators.minLength(18), Validators.pattern(/^([A-Z][AEIOUX][A-Z]{2}\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])[HM](?:AS|B[CS]|C[CLMSH]|D[FG]|G[TR]|HG|JC|M[CNS]|N[ETL]|OC|PL|Q[TR]|S[PLR]|T[CSL]|VZ|YN|ZS)[B-DF-HJ-NP-TV-Z]{3}[A-Z\d])(\d)$/)]],
+      rfc: ['', [Validators.required, Validators.minLength(12), Validators.pattern(/^([A-ZÑ&]{3,4}) ?(\d{2})(\d{2})(\d{2}) ?([A-Z\d]{3})?$/i)]],
       nss: ['', [Validators.required, Validators.minLength(11), Validators.maxLength(11)]],
       codigo_postal_constancia: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
       estado_id_constancia: ['', Validators.required],
@@ -627,6 +628,15 @@ export class RegistroComponent implements OnInit {
 
   goToURl(url: string) {
     open(url)
+  }
+
+  min18YearsValidator(control: AbstractControl): { [key: string]: any } | null {
+    const today = new Date();
+    const birthDate = new Date(control.value);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+    const isAdult = age > 18 || (age === 18 && monthDifference >= 0);
+    return isAdult ? null : { 'underage': true };
   }
 
 }
