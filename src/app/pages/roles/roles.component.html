@@ -1,0 +1,54 @@
+<div class="surface-card shadow-2 border-round ">
+  <div class="header flex justify-content-between align-items-center">
+    <span class="header-title">Permisos</span>
+    <button (click)="backRoute()" class="p-element mr-2 custom-button sm:w-auto flex-order-0 sm:flex-order-2" icon="pi pi-user-plus" pButton
+            pRipple>
+      <i aria-hidden="true" class="p-button-icon pi pi-arrow-left"></i>
+      <span class="p-button-label pl-1">Regresar</span>
+    </button>
+
+  </div>
+  <div class="card p-4">
+    <p-table
+      [value]="roles"
+      dataKey="id"
+      [rows]="10"
+      [columns]="columns"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [loading]="loading"
+      [paginator]="true"
+      [showFirstLastIcon]="false"
+      [globalFilterFields]="dataSource"
+      [tableStyle]="{ 'min-width': '75rem' }"
+      paginatorStyleClass="text-end"
+      responsiveLayout="stack"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" [ngStyle]="{'width.%': col.width}"
+              [pSortableColumn]="col.field">{{ col.header }}
+            <p-sortIcon [field]="col.field"></p-sortIcon>
+          </th>
+          <th class="cursor-pointer">Acciones</th>
+        </tr>
+
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+          <td *ngFor="let col of columns" >
+            {{ rowData[col.field] }}
+          </td>
+          <td class="text-center">
+            <i class="pi pi-pencil cursor-pointer" (click)="editarPermiso(rowData)"></i>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="2">No se encontraron roles.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+    <app-modal-alert></app-modal-alert>
+  </div>
+</div>

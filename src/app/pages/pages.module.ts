@@ -5,6 +5,7 @@ import {SidebarComponent} from "../share/components/sidebar/sidebar.component";
 import {UsersComponent} from "./users/users-list/users.component";
 import {authGuard} from "../share/guards/auth.guard";
 import {RegistroComponent} from "./registro/registro.component";
+import {RolesComponent} from "./roles/roles.component";
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
       {
         path: 'listado-registros',
         component: UsersComponent,
+      },
+      {
+        path: 'roles',
+        component: RolesComponent,
       }
     ]
   },
@@ -42,8 +47,7 @@ const routes: Routes = [
 
 @NgModule({
 
-  declarations: [
-  ],
+  declarations: [],
   imports: [
     RouterModule.forChild(routes),
   ],

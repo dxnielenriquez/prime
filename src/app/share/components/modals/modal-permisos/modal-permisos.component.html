@@ -1,0 +1,23 @@
+<div class="w-full h-full container">
+  <div class="card flex flex-column">
+    <p-tree
+      [value]="data"
+      class="w-full md:w-30rem">
+      <ng-template let-node pTemplate="son">
+        <p-checkbox
+          [(ngModel)]="permisos"
+          [label]="node.label"
+          [value]="node.ruta"
+        />
+      </ng-template>
+      <ng-template let-node pTemplate="parent">
+        <b>{{ node.label }}</b>
+      </ng-template>
+    </p-tree>
+  </div>
+  <div class="flex w-full justify-content-end align-items-end p-3">
+    <p-button (onClick)="view()" label="Guardar" type="button"/>
+  </div>
+</div>
+
+

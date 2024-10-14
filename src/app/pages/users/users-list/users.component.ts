@@ -11,7 +11,7 @@ import {FormsModule} from "@angular/forms";
 import {UsersService} from "../users.service";
 import {ConfirmationService, MessageService, PrimeNGConfig} from "primeng/api";
 import {Ripple} from "primeng/ripple";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {ModalAlertComponent} from "../../../share/components/modals/modal-alert/modal-alert.component";
 import {MatTooltip} from "@angular/material/tooltip";
 import {TooltipModule} from "primeng/tooltip";
@@ -152,7 +152,8 @@ export class UsersComponent implements OnInit {
     private authService: AuthService,
     private dialogService: DialogService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService) {
+    private messageService: MessageService,
+    private _router: Router) {
 
     this.primeConfig.ripple = true;
     this.getEstados();
@@ -344,5 +345,9 @@ export class UsersComponent implements OnInit {
     const day = ('0' + date.getDate()).slice(-2);
 
     return `${year}-${month}-${day}`;
+  }
+
+  permisos() {
+    this._router.navigate(['/administracion/roles']);
   }
 }

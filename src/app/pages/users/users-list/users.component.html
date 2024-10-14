@@ -1,8 +1,11 @@
 <div class="surface-card shadow-2 border-round ">
   <div class="header flex justify-content-between align-items-center">
     <span class="header-title">Listado de vacantes</span>
-
-
+    <button  *ngxPermissionsOnly="'web.roles.index'" pButton pRipple icon="pi pi-user-plus" (click)="permisos()"
+            class="p-element mr-2 custom-button sm:w-auto flex-order-0 sm:flex-order-2">
+      <i class="p-button-icon pi pi-wrench" aria-hidden="true"></i>
+      <span class="p-button-label pl-1">Modificar permisos</span>
+    </button>
   </div>
   <div class="card p-4">
 
