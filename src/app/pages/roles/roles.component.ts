@@ -43,7 +43,7 @@ export class RolesComponent implements OnInit {
     this.getRoles();
 
     this.columns = [
-      {field: 'name', header: 'Nombre', width: 90},
+      {field: 'name', header: 'Nombre', width: 70},
     ];
 
   }
