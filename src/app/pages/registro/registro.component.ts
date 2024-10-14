@@ -32,7 +32,7 @@ import {ModalAlertComponent} from "../../share/components/modals/modal-alert/mod
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 0;
+  active: number = 3;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -573,6 +573,16 @@ export class RegistroComponent implements OnInit {
       });
       return;
     }
+
+    if (!this.form.get('documentacion.aviso')!.value && this.nuevoRegistro) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Debes aceptar el aviso de privacidad.'
+      });
+      return;
+    }
+
 
     const vacantesValue = this.form.get('vacantes')?.getRawValue();
     const solicitanteValue = this.form.get('solicitante')?.getRawValue();
