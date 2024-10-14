@@ -31,10 +31,6 @@ export class FooterEditComponent {
       const bArrHex = this.tohex(encoded);
       const str = CryptoJS.enc.Hex.parse(bArrHex);
       const encrypted = CryptoJS.AES.encrypt(str, this.pwd).toString();
-      console.log(encoded)
-      console.log(bArrHex)
-      console.log(str)
-      console.log(encrypted)
       const url = this.router.createUrlTree(['/vacantes/registro'], {
         relativeTo: this.activatedRoute,
         queryParams: {id: encrypted},

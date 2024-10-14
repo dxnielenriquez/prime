@@ -7,6 +7,7 @@
   <p-steps [activeIndex]="active" [model]="items" class="p-steps"></p-steps>
 
   <div class="margin card " *ngIf="active === 0">
+
     <form [formGroup]="form['controls'].vacantes">
       <div class="flex justify-content-center">
         <h3>Datos de la vacante
@@ -574,7 +575,7 @@
       </div>
 
       <p-tabView>
-        <p-tabPanel header="Documentación personal">
+        <p-tabPanel header="Datos personales">
           <div class="formulario-group ine mt-3">
             <div class="ineImg">
               <span class="title-image">Imagen de la INE (Lado frontal)</span>
@@ -672,7 +673,7 @@
 
           </div>
         </p-tabPanel>
-        <p-tabPanel header="Constancia Fiscal">
+        <p-tabPanel header="Documentación">
 
           <div class="cargarArchivos">
 
@@ -772,11 +773,12 @@
     <p-button (click)="back()" [disabled]="active === 0" label="Regresar" icon="pi pi-arrow-left"/>
 
     <p-button (click)="onSubmit()" *ngIf="active === 3; else nextButton" label="Registrarse" icon="pi pi-file-arrow-up"
-              iconPos="right"/>
+              iconPos="right" [disabled]="loading"/>
     <ng-template #nextButton>
       <p-button (click)="next()" label="Continuar" icon="pi pi-arrow-right" iconPos="right"/>
 
     </ng-template>
   </div>
+  <app-modal-alert></app-modal-alert>
 
 </div>

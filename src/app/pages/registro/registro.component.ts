@@ -21,17 +21,18 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {TabViewModule} from "primeng/tabview";
 import * as CryptoJS from 'crypto-js';
 import {InputMaskModule} from "primeng/inputmask";
+import {ModalAlertComponent} from "../../share/components/modals/modal-alert/modal-alert.component";
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass, TabViewModule, InputMaskModule],
+  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass, TabViewModule, InputMaskModule, ModalAlertComponent],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 1;
+  active: number = 0;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -61,6 +62,7 @@ export class RegistroComponent implements OnInit {
   selectedIneImage: string | ArrayBuffer | null = null;
   update_foto_perfil = false;
   update_foto_credencial = false;
+  loading: boolean = false;
   columnas = [
     {id: 1, nombre: 'A+'},
     {id: 2, nombre: 'A-'},
@@ -146,6 +148,11 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Prueba',
+      detail: 'Este es un mensaje de prueba.',
+    });
     if (this.query) {
       this.nuevoRegistro = false;
       let decrypted = CryptoJS.AES.decrypt(this.query.toString(), environment.api.PW);
@@ -436,6 +443,7 @@ export class RegistroComponent implements OnInit {
         const ine = registro.clave_ine;
         this.registroService.sendIne(formData, ine).subscribe({
           next: () => {
+            this.loading = false;
             window.location.reload();
             this.messageService.add({
               severity: 'success',
@@ -445,6 +453,7 @@ export class RegistroComponent implements OnInit {
             });
           },
           error: () => {
+            this.loading = false;
             this.messageService.add({
               severity: 'error',
               summary: 'Error los archivos',
@@ -455,6 +464,7 @@ export class RegistroComponent implements OnInit {
 
       },
       error: () => {
+        this.loading = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Error al enviar',
@@ -468,6 +478,7 @@ export class RegistroComponent implements OnInit {
 
 
   actualizarRegistro(registro: any) {
+    this.loading = true;
     const formData = new FormData();
 
     Object.keys(registro).forEach(key => {
@@ -486,8 +497,10 @@ export class RegistroComponent implements OnInit {
 
     this.registroService.actualizarRegistro(this.id, registro).subscribe({
       next: () => {
+
         this.registroService.sendIne(formData, ine).subscribe({
           next: () => {
+            this.loading = false;
             window.location.reload();
             this.messageService.add({
               severity: 'success',
@@ -497,6 +510,7 @@ export class RegistroComponent implements OnInit {
             });
           },
           error: () => {
+            this.loading = false;
             this.messageService.add({
               severity: 'error',
               summary: 'Error con los archivos',
@@ -506,6 +520,7 @@ export class RegistroComponent implements OnInit {
         });
       },
       error: () => {
+        this.loading = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Error al actualizar',
@@ -550,6 +565,15 @@ export class RegistroComponent implements OnInit {
       return;
     }
 
+    if (!this.constanciaFiscal && this.nuevoRegistro) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'La constancia fiscal es requerida.'
+      });
+      return;
+    }
+
     const vacantesValue = this.form.get('vacantes')?.getRawValue();
     const solicitanteValue = this.form.get('solicitante')?.getRawValue();
     const documentacionValue = this.form.get('documentacion')?.getRawValue();
@@ -566,6 +590,7 @@ export class RegistroComponent implements OnInit {
 
     };
 
+    this.loading = true;
 
     if (this.nuevoRegistro) {
       this.guardarRegistro(mergedObject);
