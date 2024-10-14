@@ -161,14 +161,11 @@ export class RegistroComponent implements OnInit {
         this.form.reset(res)
 
 
-
-
         if (res.documentacion && res.documentacion.aviso) {
           this.form.get('documentacion.aviso')?.setValue(true);
         } else {
           this.form.get('documentacion.aviso')?.setValue(false);
         }
-
 
         this.getMunicipiosBeneficiario();
         this.getMunicipiosSolicitante();
@@ -389,10 +386,12 @@ export class RegistroComponent implements OnInit {
 
 
   usarDomicilio() {
-    if (this.form.controls.beneficiario.get('usarDomicilio')!.value) {
+    const usarDomicilioControl = this.form.controls.beneficiario.get('usarDomicilio')!.value;
+
+    if (usarDomicilioControl) {
       const solicitanteControls = this.form.controls.solicitante.controls;
       const beneficiarioControls = this.form.controls.beneficiario.controls;
-      this.municipiosBeneficiario = this.municipiosSolicitante;
+
       beneficiarioControls.calle.setValue(solicitanteControls.calle.value);
       beneficiarioControls.numero_ext.setValue(solicitanteControls.numero_ext.value);
       beneficiarioControls.numero_int.setValue(solicitanteControls.numero_int.value);
@@ -402,6 +401,7 @@ export class RegistroComponent implements OnInit {
       beneficiarioControls.municipio_id.setValue(solicitanteControls.municipio_origen_id.value);
     } else {
       const beneficiarioControls = this.form.controls.beneficiario.controls;
+
       beneficiarioControls.calle.reset();
       beneficiarioControls.numero_ext.reset();
       beneficiarioControls.numero_int.reset();
@@ -411,7 +411,6 @@ export class RegistroComponent implements OnInit {
       beneficiarioControls.municipio_id.reset();
     }
   }
-
 
   verAviso() {
 

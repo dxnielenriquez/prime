@@ -701,14 +701,14 @@
               showCancelButton="false"
               (onSelect)="pdfSubmit($event, false)"/>
 
-
           </div>
 
           <div class="  inputs gap-5 mt-5 ">
 
             <div class="w-full">
               <p-floatLabel class="tamaño">
-                <input pInputText id="cpConstanciaFiscal" formControlName="codigo_postal_constancia" class="w-full"/>
+                <p-inputMask id="cpConstanciaFiscal" formControlName="codigo_postal_constancia" slotChar="" type="text" mask="99999"
+                             [style]="{'width': '100%'}" autoClear="false"></p-inputMask>
                 <label for="cpConstanciaFiscal">Código postal constancia</label>
               </p-floatLabel>
               <small *ngIf="isControlHasError('documentacion', 'codigo_postal_constancia', 'required')"
