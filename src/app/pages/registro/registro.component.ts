@@ -32,7 +32,7 @@ import {ModalAlertComponent} from "../../share/components/modals/modal-alert/mod
 })
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
-  active: number = 3;
+  active: number = 0;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -148,11 +148,7 @@ export class RegistroComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.messageService.add({
-      severity: 'info',
-      summary: 'Prueba',
-      detail: 'Este es un mensaje de prueba.',
-    });
+
     if (this.query) {
       this.nuevoRegistro = false;
       let decrypted = CryptoJS.AES.decrypt(this.query.toString(), environment.api.PW);
@@ -163,6 +159,16 @@ export class RegistroComponent implements OnInit {
 
       this.registroService.show(this.id).subscribe(res => {
         this.form.reset(res)
+
+
+
+
+        if (res.documentacion && res.documentacion.aviso) {
+          this.form.get('documentacion.aviso')?.setValue(true);
+        } else {
+          this.form.get('documentacion.aviso')?.setValue(false);
+        }
+
 
         this.getMunicipiosBeneficiario();
         this.getMunicipiosSolicitante();
