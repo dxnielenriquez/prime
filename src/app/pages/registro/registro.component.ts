@@ -112,7 +112,6 @@ export class RegistroComponent implements OnInit {
       municipio_id: [{value: '', disabled: true}, Validators.required],
       usarDomicilio: [false],
 
-
     }),
     documentacion: this._formBuilder.group({
       clave_ine: ['', [Validators.required, Validators.minLength(18), Validators.maxLength(18)]],
@@ -157,7 +156,6 @@ export class RegistroComponent implements OnInit {
       this.registroService.show(this.id).subscribe(res => {
         this.form.reset(res)
 
-        console.log(this.form)
         this.getMunicipiosBeneficiario();
         this.getMunicipiosSolicitante();
         this.getMunicipios();
@@ -226,7 +224,6 @@ export class RegistroComponent implements OnInit {
     });
 
   }
-
 
   getMunicipiosSolicitante() {
     let estadoIdSolicitante = this.form.get(`solicitante.estado_origen_id`)?.value;
@@ -349,14 +346,12 @@ export class RegistroComponent implements OnInit {
     let file = files[0];
 
     if (!file) return;
-    console.log(file)
     if (file.size > 5000000) {
       this.messageService.add({
         severity: 'error',
         summary: 'Alto',
         detail: 'Imagen demasiado grande.'
       });
-      console.log('Imagen demasiado grande.')
       return;
     }
 
@@ -434,7 +429,6 @@ export class RegistroComponent implements OnInit {
     if (this.constanciaFiscal) {
       formData.append('constanciaFiscal', this.constanciaFiscal);
     }
-    console.log(formData)
 
     this.registroService.crearRegistro(registro).subscribe({
       next: () => {
@@ -448,7 +442,6 @@ export class RegistroComponent implements OnInit {
               detail: 'El registro se ha creado con éxito.',
               life: 30000
             });
-            console.log('El registro se ha creado con éxito.')
           },
           error: () => {
             this.messageService.add({
@@ -456,7 +449,6 @@ export class RegistroComponent implements OnInit {
               summary: 'Error los archivos',
               detail: 'Hubo un problema al subir sus archivos.'
             });
-            console.log('Hubo un problema al subir los archivos')
           }
         });
 
@@ -467,18 +459,16 @@ export class RegistroComponent implements OnInit {
           summary: 'Error al enviar',
           detail: 'Hubo un problema al registrarse.'
         });
-        console.log('Hubo un problema al enviar')
       }
 
-    })
-    ;
-    console.log(formData)
+    });
 
   }
 
 
   actualizarRegistro(registro: any) {
     const formData = new FormData();
+
     Object.keys(registro).forEach(key => {
       formData.append(key, registro[key]);
     });
@@ -504,7 +494,6 @@ export class RegistroComponent implements OnInit {
               detail: 'El registro se ha actualizado con éxito.',
               life: 30000
             });
-            console.log('El registro se ha actualizado con éxito.')
           },
           error: () => {
             this.messageService.add({
@@ -512,7 +501,6 @@ export class RegistroComponent implements OnInit {
               summary: 'Error con los archivos',
               detail: 'Hubo un problema al actualizar sus archivos.'
             });
-            console.log('Hubo un problema al actualizar los archivos.')
           }
         });
       },
@@ -522,7 +510,6 @@ export class RegistroComponent implements OnInit {
           summary: 'Error al actualizar',
           detail: 'Hubo un problema al actualizar el registro.'
         });
-        console.log('Hubo un problema al actualizar el registro.')
       }
     });
   }
@@ -585,10 +572,8 @@ export class RegistroComponent implements OnInit {
 
       this.actualizarRegistro(mergedObject);
     }
-    console.log(mergedObject);
 
   }
-
 
   isControlHasError(controlGroup: string, controlName: string, validationType: string): boolean {
     const controlG = this.form.get(controlGroup);

@@ -1,13 +1,16 @@
 <div class="card">
-  <p-menubar >
+  <p-menubar>
 
-    <ng-template pTemplate="end" [ngIf]="username">
+    <ng-template pTemplate="start">
+      <img src="assets/images/logo.png" alt="logo" height="60" width="60"/>
+    </ng-template>
+    <ng-template pTemplate="end" *ngIf="username">
       <div class="flex align-items-center cursor-pointer gap-2">
         <p-avatar [style]="{'background-color': '#343a40', 'color': 'white'}" (click)="op.toggle($event)"
                   shape="circle" icon="pi pi-user"/>
       </div>
       <p-overlayPanel #op>
-        <div class="flex flex-column gap-3 w-25rem color-secundario border-round-top" >
+        <div class="flex flex-column gap-3 w-25rem color-secundario border-round-top">
           <div>
             <div class="menu-container text-center flex-column">
               <div class="flex align-items-center">

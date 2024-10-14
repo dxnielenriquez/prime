@@ -5,11 +5,12 @@ import {MenuItem} from "primeng/api";
 import {AuthService} from "../../services/auth.service";
 import {Router} from "@angular/router";
 import {OverlayPanelModule} from "primeng/overlaypanel";
+import {CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [PrimeModule, MenubarModule, OverlayPanelModule],
+  imports: [PrimeModule, MenubarModule, OverlayPanelModule, CommonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })
