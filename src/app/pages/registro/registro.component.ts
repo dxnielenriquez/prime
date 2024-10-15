@@ -394,7 +394,7 @@ export class RegistroComponent implements OnInit {
     if (usarDomicilioControl) {
       const solicitanteControls = this.form.controls.solicitante.controls;
       const beneficiarioControls = this.form.controls.beneficiario.controls;
-
+      this.municipiosBeneficiario = this.municipiosSolicitante;
       beneficiarioControls.calle.setValue(solicitanteControls.calle.value);
       beneficiarioControls.numero_ext.setValue(solicitanteControls.numero_ext.value);
       beneficiarioControls.numero_int.setValue(solicitanteControls.numero_int.value);
