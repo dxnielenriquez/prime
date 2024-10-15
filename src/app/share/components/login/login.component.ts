@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginData)
       .subscribe({
         next: () => {
-          this.router.navigate(["/administracion/listado-registros"]).then();
+          window.location.reload()
         }
       })
   }

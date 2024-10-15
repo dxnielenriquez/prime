@@ -172,7 +172,7 @@ export class UsersComponent implements OnInit {
       {field: 'estado_origen', header: 'Estado de origen', width: 11},
       {field: 'clave_ine', header: 'Clave de elector', width: 11},
       {field: 'estatus', header: 'Estatus', width: 11},
-      {field: 'procesado', header: 'Procesado por', width: 11},
+      {field: 'atendio', header: 'Procesado por', width: 11},
     ];
 
   }

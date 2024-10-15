@@ -57,7 +57,7 @@ export class ModalPermisosComponent implements OnInit {
     };
 
     this._rolesService.update(this.id, data).subscribe({
-      next: (res) => {
+      next: () => {
         this.messageService.add({
           severity: 'info',
           summary: 'Éxito',

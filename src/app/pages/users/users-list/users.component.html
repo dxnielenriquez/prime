@@ -1,9 +1,10 @@
 <div class="surface-card shadow-2 border-round ">
   <div class="header flex justify-content-between align-items-center">
     <span class="header-title">Listado de vacantes</span>
-    <button  *ngxPermissionsOnly="'web.roles.index'" pButton pRipple icon="pi pi-user-plus" (click)="permisos()"
-            class="p-element mr-2 custom-button sm:w-auto flex-order-0 sm:flex-order-2">
-      <i class="p-button-icon pi pi-wrench" aria-hidden="true"></i>
+    <button (click)="permisos()" *ngxPermissionsOnly="'web.roles.index'"
+            class="p-element mr-2 custom-button sm:w-auto flex-order-0 sm:flex-order-2" icon="pi pi-user-plus" pButton
+            pRipple>
+      <i aria-hidden="true" class="p-button-icon pi pi-wrench"></i>
       <span class="p-button-label pl-1">Modificar permisos</span>
     </button>
   </div>
@@ -11,6 +12,7 @@
 
     <p-table
       #dt2
+      *ngxPermissionsOnly="'web.listado-registro.index'"
       [columns]="columns"
       [globalFilterFields]="dataSource"
       [loading]="loading"
@@ -41,14 +43,14 @@
               <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-filter-slash"></span>
               <span class="p-button-label">Limpiar filtro</span>
             </button>
-            <button (click)="clearTable(dt2)"
+            <button (click)="clearTable(dt2)" *ngxPermissionsOnly="'web.documentos-administracion.reporte-pagadora'"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
-                    icon="pi pi-user-plus" label="Add New" pButton
-                    pRipple>
+                    icon="pi pi-user-plus" label="Add New" pButton pRipple>
               <span aria-hidden="true" class="p-button-icon p-button-icon-left pi pi-download"></span>
               <span class="p-button-label">Reporte pagadora</span>
             </button>
             <button (click)="descargarTerminados()"
+                    *ngxPermissionsOnly="'web.documentos-administracion.cartas-terminacion'"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
                     icon="pi pi-user-plus" label="Add New" pButton
                     pRipple>
@@ -56,6 +58,7 @@
               <span class="p-button-label">Descargar cartas de renuncia</span>
             </button>
             <button (click)="descargarAceptados()"
+                    *ngxPermissionsOnly="'web.documentos-administracion.contratados-excel'"
                     class="p-element p-button-outlined w-full sm:w-auto flex-order-2 sm:flex-order-1 p-button p-component"
                     icon="pi pi-user-plus" label="Add New" pButton
                     pRipple>
@@ -75,8 +78,8 @@
                   [readonlyInput]="true"
                   [showIcon]="true"
                   [stepYearPicker]="false"
-                  dateFormat="dd-mm-yy"
                   [style]="{'width': '100%'}"
+                  dateFormat="dd-mm-yy"
                   id="calendar"
                   selectionMode="range"/>
                   <label for="calendar">Fecha</label>
@@ -154,18 +157,23 @@
             <p-tieredMenu #documentos [model]="itemsDoc" [popup]="true" appendTo="body">
               <ng-template let-hasSubmenu="hasSubmenu" let-item pTemplate="item">
                 <ng-container *ngIf="item.id == 'curriculum'; else constancia">
-                  <div (click)="mostrarPDF(1 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
-                       *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
-                    <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
-                  </div>
-                </ng-container>
-                <ng-template #constancia>
-                  <ng-container *ngIf="item.id == 'constancia'; else documentosIE">
-                    <div (click)="mostrarPDF(2 ,rowData.id, 'obtener-cv', 'Constancia de ' + rowData.nombre)"
+                  <ng-container *ngxPermissionsOnly="'web.documentos-solicitud.obtener-CV'">
+                    <div (click)="mostrarPDF(1 ,rowData.id, 'obtener-cv', 'Curriculum de ' + rowData.nombre)"
                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
                          class="p-menuitem-link">
                       <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                     </div>
+                  </ng-container>
+                </ng-container>
+                <ng-template #constancia>
+                  <ng-container *ngIf="item.id == 'constancia'; else documentosIE">
+                    <ng-container *ngxPermissionsOnly="'web.documentos-solicitud.obtener-CV'">
+                      <div (click)="mostrarPDF(2 ,rowData.id, 'obtener-cv', 'Constancia de ' + rowData.nombre)"
+                           *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
+                           class="p-menuitem-link">
+                        <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                      </div>
+                    </ng-container>
                   </ng-container>
                   <ng-template #documentosIE>
                     <ng-container *ngIf="item.id == 'documentosIE'; else documentosG">
@@ -176,73 +184,97 @@
                     </ng-container>
                     <ng-template #documentosG>
                       <ng-container *ngIf="item.id == 'documentosG'; else cartaIE ">
-                        <div *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                        <div
+                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.BAJATEXTO"
+                          class="p-menuitem-link">
                           <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                           <span *ngIf="hasSubmenu" class="pi pi-angle-right ml-auto"></span>
                         </div>
                       </ng-container>
                       <ng-template #cartaIE>
                         <ng-container *ngIf="item.id == 'cartaIE'; else pruebaIE">
-                          <div
-                            (click)="mostrarPDF(1 ,rowData.id, 'carta-compromiso', 'Carta compromiso de ' + rowData.nombre)"
-                            *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
-                            class="p-menuitem-link">
-                            <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
-                          </div>
-                        </ng-container>
-                        <ng-template #pruebaIE>
-                          <ng-container *ngIf="item.id == 'pruebaIE'; else convenioIE">
+                          <ng-container *ngxPermissionsOnly="'web.documentos-solicitud.visualizar-carta-compromiso'">
                             <div
-                              (click)="mostrarPDF(1 ,rowData.id, 'periodo-prueba', 'Periodo de prueba de ' + rowData.nombre)"
-                              *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                              (click)="mostrarPDF(1 ,rowData.id, 'carta-compromiso', 'Carta compromiso de ' + rowData.nombre)"
+                              *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO || rowData.estatus == estatusVacante.PENDIENTETEXTO"
+                              class="p-menuitem-link">
                               <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                             </div>
                           </ng-container>
-                          <ng-template #convenioIE>
-                            <ng-container *ngIf="item.id == 'convenioIE'; else delitosIE">
-                              <div (click)="mostrarPDF(1 ,rowData.id, 'convenio', 'Convenio de ' + rowData.nombre)"
-                                   *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                        </ng-container>
+                        <ng-template #pruebaIE>
+                          <ng-container *ngIf="item.id == 'pruebaIE'; else convenioIE">
+                            <ng-container
+                              *ngxPermissionsOnly="'web.documentos-solicitud.visualizar-carta-periodo-prueba'">
+                              <div
+                                (click)="mostrarPDF(1 ,rowData.id, 'periodo-prueba', 'Periodo de prueba de ' + rowData.nombre)"
+                                *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
                                 <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                               </div>
                             </ng-container>
-                            <ng-template #delitosIE>
-                              <ng-container *ngIf="item.id == 'delitosIE'; else contratoIE">
-                                <div
-                                  (click)="mostrarPDF(1 ,rowData.id, 'delitos-electorales', 'Carta de delitos de ' + rowData.nombre)"
-                                  *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                          </ng-container>
+                          <ng-template #convenioIE>
+                            <ng-container *ngIf="item.id == 'convenioIE'; else delitosIE">
+                              <ng-container *ngxPermissionsOnly="'web.documentos-solicitud.convenio-confidencialidad'">
+                                <div (click)="mostrarPDF(1 ,rowData.id, 'convenio', 'Convenio de ' + rowData.nombre)"
+                                     *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
                                   <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                                 </div>
                               </ng-container>
-                              <ng-template #contratoIE>
-                                <ng-container *ngIf="item.id == 'contratoIE'; else renunciaIE">
-                                  <div (click)="mostrarPDF(1 ,rowData.id, 'contrato', 'Contrato de ' + rowData.nombre)"
-                                       *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                            </ng-container>
+                            <ng-template #delitosIE>
+                              <ng-container *ngIf="item.id == 'delitosIE'; else contratoIE">
+                                <ng-container
+                                  *ngxPermissionsOnly="'web.documentos-solicitud.visualizar-delitos-electorales'">
+                                  <div
+                                    (click)="mostrarPDF(1 ,rowData.id, 'delitos-electorales', 'Carta de delitos de ' + rowData.nombre)"
+                                    *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
                                     <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                                   </div>
                                 </ng-container>
-                                <ng-template #renunciaIE>
-                                  <ng-container *ngIf="item.id == 'renunciaIE'; else pruebaG ">
+                              </ng-container>
+                              <ng-template #contratoIE>
+                                <ng-container *ngIf="item.id == 'contratoIE'; else renunciaIE">
+                                  <ng-container *ngxPermissionsOnly="'web.documentos-solicitud.generar-contrato'">
                                     <div
-                                      (click)="mostrarPDF(1 ,rowData.id, 'solicitud-carta-terminacion', 'Carta de ' + rowData.nombre)"
-                                      *ngIf="rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                                      (click)="mostrarPDF(1 ,rowData.id, 'contrato', 'Contrato de ' + rowData.nombre)"
+                                      *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
                                       <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                                     </div>
                                   </ng-container>
-                                  <ng-template #pruebaG>
-                                    <ng-container *ngIf="item.id == 'pruebaG'; else renunciaG ">
+                                </ng-container>
+                                <ng-template #renunciaIE>
+                                  <ng-container *ngIf="item.id == 'renunciaIE'; else pruebaG ">
+                                    <ng-container *ngxPermissionsOnly="'web.documentos-solicitud.carta-terminacion'">
                                       <div
-                                        (click)="mostrarPDF(2 ,rowData.id, 'periodo-prueba', 'Periodo de prueba de ' + rowData.nombre)"
-                                        *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                                        (click)="mostrarPDF(1 ,rowData.id, 'solicitud-carta-terminacion', 'Carta de ' + rowData.nombre)"
+                                        *ngIf="rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
                                         <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                                       </div>
                                     </ng-container>
-                                    <ng-template #renunciaG>
-                                      <ng-container *ngIf="item.id == 'renunciaG'">
+                                  </ng-container>
+                                  <ng-template #pruebaG>
+                                    <ng-container
+                                      *ngxPermissionsOnly="'web.documentos-solicitud.visualizar-carta-periodo-prueba'">
+                                      <ng-container *ngIf="item.id == 'pruebaG'; else renunciaG ">
                                         <div
-                                          (click)="mostrarPDF(2 ,rowData.id, 'solicitud-carta-terminacion', 'Carta de ' + rowData.nombre)"
-                                          *ngIf="rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                                          (click)="mostrarPDF(2 ,rowData.id, 'periodo-prueba', 'Periodo de prueba de ' + rowData.nombre)"
+                                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO"
+                                          class="p-menuitem-link">
                                           <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                                         </div>
+                                      </ng-container>
+                                    </ng-container>
+                                    <ng-template #renunciaG>
+                                      <ng-container *ngIf="item.id == 'renunciaG'">
+                                        <ng-container
+                                          *ngxPermissionsOnly="'web.documentos-solicitud.carta-terminacion'">
+                                          <div
+                                            (click)="mostrarPDF(2 ,rowData.id, 'solicitud-carta-terminacion', 'Carta de ' + rowData.nombre)"
+                                            *ngIf="rowData.estatus == estatusVacante.BAJATEXTO" class="p-menuitem-link">
+                                            <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                                          </div>
+                                        </ng-container>
                                       </ng-container>
                                     </ng-template>
                                   </ng-template>
@@ -257,40 +289,47 @@
                 </ng-template>
               </ng-template>
             </p-tieredMenu>
-            <i (click)="mostrarDetalle(rowData.id)"
+            <i (click)="mostrarDetalle(rowData.id)" *ngxPermissionsOnly="'web.listado-registro.visualizar-detalle'"
                class="pi pi-eye pr-2 cursor-pointer"></i>
-            <i (click)="solicitud.toggle($event)" *ngIf="rowData.estatus != estatusVacante.BAJATEXTO && rowData.estatus != estatusVacante.RECHAZADOTEXTO"
+            <i (click)="solicitud.toggle($event)"
+               *ngIf="rowData.estatus != estatusVacante.BAJATEXTO && rowData.estatus != estatusVacante.RECHAZADOTEXTO"
                class="pi pi-user-edit pr-2 cursor-pointer"></i>
             <p-tieredMenu #solicitud [model]="itemsSolicitud" [popup]="true" appendTo="body">
               <ng-template let-item pTemplate="item">
                 <ng-container *ngIf="item.id == 'aceptar'; else rechazar">
-                  <div (click)="cambiarEstatus(rowData, 'aceptar')"
-                       *ngIf="rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
-                    <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
-                  </div>
-                </ng-container>
-                <ng-template #rechazar>
-                  <ng-container *ngIf="item.id == 'rechazar'; else editar_fecha ">
-                    <div (click)="cambiarEstatus(rowData, 'rechazar')"
-                      *ngIf="rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
+                  <ng-container *ngxPermissionsOnly="'web.solicitud.aceptar-solicitud'">
+                    <div (click)="cambiarEstatus(rowData, 'aceptar')"
+                         *ngIf="rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
                       <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                     </div>
                   </ng-container>
-                  <ng-template #editar_fecha>
-                    <ng-container *ngIf="item.id == 'editar_fecha'; else dar_baja ">
-                      <div
-                        (click)="cambiarEstatus(rowData, 'actualizar-inicio')"
-                        *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                </ng-container>
+                <ng-template #rechazar>
+                  <ng-container *ngIf="item.id == 'rechazar'; else editar_fecha ">
+                    <ng-container *ngxPermissionsOnly="'web.solicitud.rechazar-solicitud'">
+                      <div (click)="cambiarEstatus(rowData, 'rechazar')"
+                           *ngIf="rowData.estatus == estatusVacante.PENDIENTETEXTO" class="p-menuitem-link">
                         <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                       </div>
                     </ng-container>
-                    <ng-template #dar_baja>
-                      <ng-container *ngIf="item.id == 'dar_baja'">
-                        <div
-                          (click)="cambiarEstatus(rowData, 'baja')"
-                          *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                  </ng-container>
+                  <ng-template #editar_fecha>
+                    <ng-container *ngIf="item.id == 'editar_fecha'; else dar_baja ">
+                      <ng-container *ngxPermissionsOnly="'web.solicitud.actualizar-fecha'">
+                        <div (click)="cambiarEstatus(rowData, 'actualizar-inicio')"
+                             *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
                           <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
                         </div>
+                      </ng-container>
+                    </ng-container>
+                    <ng-template #dar_baja>
+                      <ng-container *ngIf="item.id == 'dar_baja'">
+                        <ng-container *ngxPermissionsOnly="'web.solicitud.dar-baja'">
+                          <div (click)="cambiarEstatus(rowData, 'baja')"
+                               *ngIf="rowData.estatus == estatusVacante.ACEPTADOTEXTO" class="p-menuitem-link">
+                            <span class="ml-2" style="max-width: 150px">{{ item.label }}</span>
+                          </div>
+                        </ng-container>
                       </ng-container>
                     </ng-template>
                   </ng-template>

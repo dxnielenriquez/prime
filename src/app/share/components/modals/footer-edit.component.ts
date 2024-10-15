@@ -4,14 +4,15 @@ import {DynamicDialogConfig} from "primeng/dynamicdialog";
 import * as CryptoJS from 'crypto-js';
 import {environment} from "../../../../environments/environment";
 import {ActivatedRoute, Router} from "@angular/router";
+import {NgxPermissionsModule} from "ngx-permissions";
 
 @Component({
   selector: 'footer',
   standalone: true,
-  imports: [ButtonModule],
+  imports: [ButtonModule, NgxPermissionsModule],
   template: `
-    <div class="flex w-full justify-content-end mt-3">
-      <p-button type="button" label="Editar" (onClick)="abrir()"/>
+    <div *ngxPermissionsOnly="'web.listado-registro.update'" class="flex w-full justify-content-end mt-3">
+      <p-button (onClick)="abrir()" label="Editar" type="button"/>
     </div> `
 })
 export class FooterEditComponent {
