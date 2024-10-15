@@ -34,7 +34,6 @@ import {StepperModule} from "primeng/stepper";
 export class RegistroComponent implements OnInit {
   items: MenuItem[] | undefined;
   active: number = 0;
-  currentIndex: number = 0;
   vertical = false;
   vacantes = [];
   estados = [];
@@ -53,7 +52,6 @@ export class RegistroComponent implements OnInit {
   parentescos = []
   image: any;
   imageURL: any;
-  currentStep: number = 1;
   code = '';
   cv: File | null = null;
   constanciaFiscal: File | null = null;
@@ -559,7 +557,7 @@ export class RegistroComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error al enviar',
-        detail: 'La fote de la INE es requerida.'
+        detail: 'La foto de la INE es requerida.'
 
       });
       return;
@@ -658,13 +656,6 @@ export class RegistroComponent implements OnInit {
     }
     callback.emit();
 
-  }
-
-
-  back() {
-    if (this.active > 0) {
-      this.active -= 1;
-    }
   }
 
   goToURl(url: string) {

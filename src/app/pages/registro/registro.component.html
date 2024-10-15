@@ -76,7 +76,7 @@
           </div>
           <div class="flex pt-4 justify-content-end">
             <p-button
-              label="Next"
+              label="Continuar"
               icon="pi pi-arrow-right"
               iconPos="right"
               (onClick)="next(nextCallback)  "/>
@@ -374,11 +374,11 @@
           </div>
           <div class="flex pt-4 justify-content-between">
             <p-button
-              label="Back"
+              label="Regresar"
               icon="pi pi-arrow-left"
               (onClick)="prevCallback.emit()"/>
             <p-button
-              label="Next"
+              label="Continuar"
               icon="pi pi-arrow-right"
               iconPos="right"
               (onClick)="next(nextCallback, 1)"/>
@@ -625,18 +625,18 @@
           </div>
           <div class="flex pt-4 justify-content-between">
             <p-button
-              label="Back"
+              label="Regresar"
               icon="pi pi-arrow-left"
               (onClick)="prevCallback.emit()"/>
             <p-button
-              label="Next"
+              label="Continuar"
               icon="pi pi-arrow-right"
               iconPos="right"
               (onClick)="next(nextCallback, 2)"/>
           </div>
         </ng-template>
       </p-stepperPanel>
-      <p-stepperPanel header="Documentacion">
+      <p-stepperPanel header="Documentación">
         <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback"
                      let-index="index">
           <div class="flex flex-column ">
@@ -846,7 +846,7 @@
           </div>
           <div class="flex pt-4 justify-content-between">
             <p-button
-              label="Back"
+              label="Regresar"
               icon="pi pi-arrow-left"
               (onClick)="prevCallback.emit()"/>
             <p-button (click)="onSubmit()" [label]="nuevoRegistro ? 'Registrarse' : 'Actualizar'"
@@ -857,7 +857,6 @@
       </p-stepperPanel>
     </p-stepper>
   </div>
-
 
   <app-modal-alert></app-modal-alert>
 
