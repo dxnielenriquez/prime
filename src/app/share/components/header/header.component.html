@@ -7,7 +7,7 @@
     <ng-template pTemplate="end" *ngIf="username">
       <div class="flex align-items-center cursor-pointer gap-2">
         <p-avatar [style]="{'background-color': '#343a40', 'color': 'white'}" (click)="op.toggle($event)"
-                  shape="circle" icon="pi pi-user"/>
+                  size="large" shape="circle" icon="pi pi-user"/>
       </div>
       <p-overlayPanel #op>
         <div class="flex flex-column gap-3 w-25rem color-secundario border-round-top">

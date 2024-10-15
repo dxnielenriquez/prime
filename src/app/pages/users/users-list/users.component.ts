@@ -47,8 +47,8 @@ export class UsersComponent implements OnInit {
   searchValue: string | undefined
   estatusVacante = EstatusVacante;
   dataSource = ['fecha_registro', 'vacante', 'estado', 'nombre', 'estado_origen', 'clave_ine', 'estatus', 'procesado'];
-  estados: any = [];
-  vacantes: any = [];
+  estados: [{nombre: string, campo: string}] = [{'nombre': 'Todos los estatus', 'campo': ' '}];
+  vacantes: [{descripcion: string, campo: string}] = [{'descripcion': 'Todos los estatus', 'campo': ' '}];
   rangeDates: Date[] = [];
   itemsDoc = [
     {
