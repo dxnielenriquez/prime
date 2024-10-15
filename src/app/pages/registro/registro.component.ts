@@ -22,11 +22,12 @@ import {TabViewModule} from "primeng/tabview";
 import * as CryptoJS from 'crypto-js';
 import {InputMaskModule} from "primeng/inputmask";
 import {ModalAlertComponent} from "../../share/components/modals/modal-alert/modal-alert.component";
+import {StepperModule} from "primeng/stepper";
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass, TabViewModule, InputMaskModule, ModalAlertComponent],
+  imports: [StepsModule, ToastModule, Button, MatStepper, MatStep, ReactiveFormsModule, NgIf, DropdownModule, NgTemplateOutlet, FormsModule, FloatLabelModule, ChipsModule, CalendarModule, FileUploadModule, CheckboxModule, NgClass, TabViewModule, InputMaskModule, ModalAlertComponent, StepperModule],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
@@ -89,7 +90,7 @@ export class RegistroComponent implements OnInit {
       estado_civil_id: ['', Validators.required],
       fecha_nacimiento: ['', [Validators.required, this.min18YearsValidator]],
       calle: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), ]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5),]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
       codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.pattern(/^([0-9])*$/)]],
@@ -107,7 +108,7 @@ export class RegistroComponent implements OnInit {
       parentesco_id: ['', Validators.required],
       rfc: ['', [Validators.required, Validators.minLength(13), Validators.pattern(/^([A-ZÑ&]{3,4}) ?(\d{2})(\d{2})(\d{2}) ?([A-Z\d]{3})?$/i)]],
       calle: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
-      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5), ]],
+      numero_ext: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(5),]],
       numero_int: ['', [Validators.minLength(1), Validators.maxLength(5), Validators.pattern(/^([0-9])*$/)]],
       colonia: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]],
       codigo_postal: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(5)]],
@@ -391,7 +392,7 @@ export class RegistroComponent implements OnInit {
     if (usarDomicilioControl) {
       const solicitanteControls = this.form.controls.solicitante.controls;
       const beneficiarioControls = this.form.controls.beneficiario.controls;
-
+      this.municipiosBeneficiario = this.municipiosSolicitante;
       beneficiarioControls.calle.setValue(solicitanteControls.calle.value);
       beneficiarioControls.numero_ext.setValue(solicitanteControls.numero_ext.value);
       beneficiarioControls.numero_int.setValue(solicitanteControls.numero_int.value);
@@ -556,7 +557,7 @@ export class RegistroComponent implements OnInit {
       this.messageService.add({
         severity: 'error',
         summary: 'Error al enviar',
-        detail: 'La fote de la INE es requerida.'
+        detail: 'La foto de la INE es requerida.'
 
       });
       return;
@@ -628,10 +629,9 @@ export class RegistroComponent implements OnInit {
   }
 
 
-  next() {
+  next(callback: any, index: number = 0) {
     let form: any;
-
-    switch (this.active) {
+    switch (index) {
       case 1:
         form = this.form['controls'].solicitante;
         break;
@@ -654,16 +654,8 @@ export class RegistroComponent implements OnInit {
 
       return;
     }
+    callback.emit();
 
-    if (this.active < 3) {
-      this.active += 1;
-    }
-  }
-
-  back() {
-    if (this.active > 0) {
-      this.active -= 1;
-    }
   }
 
   goToURl(url: string) {
@@ -676,7 +668,7 @@ export class RegistroComponent implements OnInit {
     const age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
     const isAdult = age > 18 || (age === 18 && monthDifference >= 0);
-    return isAdult ? null : { 'underage': true };
+    return isAdult ? null : {'underage': true};
   }
 
 }

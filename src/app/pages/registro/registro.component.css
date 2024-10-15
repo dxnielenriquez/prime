@@ -166,3 +166,8 @@
     width: 100%;
   }
 }
+.p-stepper {
+  flex-basis: 50rem;
+}
+
+
