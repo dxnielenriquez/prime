@@ -30,6 +30,9 @@ import {environment} from "../../../../environments/environment";
 import {AuthService} from "../../../share/services/auth.service";
 import {ModalSolicitudComponent} from "../../../share/components/modals/modal-solicitud/modal-solicitud.component";
 import {EstatusVacante} from "../../../share/enums/estatus-vacante";
+import {
+  ModalReportePagadoraComponent
+} from "../../../share/components/modals/modal-reporte-pagadora/modal-reporte-pagadora.component";
 
 
 @Component({
@@ -336,27 +339,23 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  descargarPagadora() {
+  modalPagadora() {
     const currentDate = new Date();
     const formattedDate = this.formatoFecha(currentDate, false);
-    this._userService.getPagadora().subscribe({
-      next: (res) => {
-        const blobData = new Blob([res], {type: 'application/vnd.ms-excel'});
-        const downloadLink = document.createElement('a');
-        downloadLink.href = window.URL.createObjectURL(blobData);
-        downloadLink.setAttribute('download', `ALTAS-PAGADORA-${formattedDate}.xls`);
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-      },
-      error: () => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Hubo un error al descargar el reporte de la pagadora.'
-        });
-      }
-    });
+
+    this.dialogService.open(ModalReportePagadoraComponent,
+      {
+        header: 'Reporte pagadora',
+        width: '40vw',
+        height: '50vh',
+        contentStyle: {padding: 0},
+        breakpoints: {
+          '991px': '80vw',
+          '640px': '90vw'
+        },
+        data: formattedDate
+      });
+
   }
 
   formatoFecha(fecha: Date, Ymd = true): string {
