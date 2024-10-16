@@ -32,7 +32,6 @@ export class MainComponent implements OnInit {
           this.permissionsService.addPermission(key);
         }
       });
-      console.log(this.permissionsService.getPermissions())
     }
   }
 }
