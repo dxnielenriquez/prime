@@ -39,7 +39,7 @@ export class FooterEditComponent {
 
       window.open(url.toString(), '_blank');
     } catch (error) {
-      console.error('Error during encryption:', error);
+      console.error('Error de encriptado: ', error);
     }
   }
 
