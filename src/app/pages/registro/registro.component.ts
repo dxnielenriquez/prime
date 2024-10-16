@@ -172,8 +172,8 @@ export class RegistroComponent implements OnInit {
         this.getMunicipiosSolicitante();
         this.getMunicipios();
         this.getMunicipiosConstancia();
-        this.selectedImage = environment.api.storageUrl + res.foto_perfil
-        this.selectedIneImage = environment.api.storageUrl + res.foto_credencial
+        this.selectedImage = res.foto_perfil ? environment.api.storageUrl + res.foto_perfil : null;
+        this.selectedIneImage = res.foto_credencial ? environment.api.storageUrl + res.foto_credencial : null;
 
         setTimeout(() => {
           this.nuevoRegistro = false;
@@ -328,7 +328,10 @@ export class RegistroComponent implements OnInit {
   }
 
   getUrl(imageProfile: any, imageURLProfile: any, def: any) {
+    console.log(imageProfile)
+    console.log(imageURLProfile)
     return (imageProfile) ? imageProfile : (imageURLProfile) ? imageURLProfile : def;
+
   }
 
   pdfSubmit(event: any, curriculum: boolean) {
@@ -450,13 +453,18 @@ export class RegistroComponent implements OnInit {
         this.registroService.sendIne(formData, ine).subscribe({
           next: () => {
             this.loading = false;
-            window.location.reload();
+
             this.messageService.add({
               severity: 'success',
               summary: 'Registro exitoso',
               detail: 'El registro se ha creado con éxito.',
               life: 30000
             });
+
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
+
           },
           error: () => {
             this.loading = false;
@@ -507,14 +515,19 @@ export class RegistroComponent implements OnInit {
         this.registroService.sendIne(formData, ine).subscribe({
           next: () => {
             this.loading = false;
-            window.location.reload();
+
             this.messageService.add({
               severity: 'success',
               summary: 'Actualización exitosa',
               detail: 'El registro se ha actualizado con éxito.',
               life: 30000
             });
+
+            setTimeout(() => {
+              window.location.reload();
+            }, 1000);
           },
+
           error: () => {
             this.loading = false;
             this.messageService.add({
@@ -534,6 +547,7 @@ export class RegistroComponent implements OnInit {
         });
       }
     });
+
   }
 
 

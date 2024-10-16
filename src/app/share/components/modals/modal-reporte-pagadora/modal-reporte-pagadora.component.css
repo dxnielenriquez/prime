@@ -1,0 +1,12 @@
+.item1 {
+  grid-area: foto;
+  justify-self: center;
+}
+
+.container {
+  display: grid;
+  grid-template-areas:
+    'foto';
+  gap: 10px;
+  padding: 10px;
+}

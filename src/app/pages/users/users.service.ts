@@ -62,11 +62,18 @@ export class UsersService {
   getCartasRenuncia(): Observable<any> {
     return this._http.get(`cartas-terminacion`, {responseType: 'arraybuffer'})
   }
+
   getAceptados(): Observable<any> {
     return this._http.get(`contratados/excel`, {responseType: 'arraybuffer'})
   }
-  getPagadora(): Observable<any> {
-    return this._http.get(`reporte-pagadora`, {responseType: 'blob'})
+
+
+  public getPagadoraFechas(fecha_ini: any, fecha_fin: any) {
+    let params = new HttpParams();
+    if (fecha_ini) params = params.append('fecha_ini', fecha_ini);
+    if (fecha_fin) params = params.append('fecha_fin', fecha_fin);
+
+    return this._http.get('reporte-pagadora', { params: params, responseType: 'blob' });
   }
 
   getBancos(): Observable<any> {
