@@ -47,8 +47,8 @@ export class UsersComponent implements OnInit {
   searchValue: string | undefined
   estatusVacante = EstatusVacante;
   dataSource = ['fecha_registro', 'vacante', 'estado', 'nombre', 'estado_origen', 'clave_ine', 'estatus', 'procesado'];
-  estados: [{nombre: string, campo: string}] = [{'nombre': 'Todos los estatus', 'campo': ' '}];
-  vacantes: [{descripcion: string, campo: string}] = [{'descripcion': 'Todos los estatus', 'campo': ' '}];
+  estados: [{ nombre: string, campo: string }] = [{'nombre': 'Todos los estatus', 'campo': ' '}];
+  vacantes: [{ descripcion: string, campo: string }] = [{'descripcion': 'Todos los estatus', 'campo': ' '}];
   rangeDates: Date[] = [];
   itemsDoc = [
     {
@@ -336,7 +336,30 @@ export class UsersComponent implements OnInit {
     });
   }
 
-  formatoFecha(fecha: Date): string {
+  descargarPagadora() {
+    const currentDate = new Date();
+    const formattedDate = this.formatoFecha(currentDate, false);
+    this._userService.getPagadora().subscribe({
+      next: (res) => {
+        const blobData = new Blob([res], {type: 'application/vnd.ms-excel'});
+        const downloadLink = document.createElement('a');
+        downloadLink.href = window.URL.createObjectURL(blobData);
+        downloadLink.setAttribute('download', `ALTAS-PAGADORA-${formattedDate}.xls`);
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      },
+      error: () => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Hubo un error al descargar el reporte de la pagadora.'
+        });
+      }
+    });
+  }
+
+  formatoFecha(fecha: Date, Ymd = true): string {
     if (!fecha) return '';
 
     const date = new Date(fecha);
@@ -344,7 +367,7 @@ export class UsersComponent implements OnInit {
     const month = ('0' + (date.getMonth() + 1)).slice(-2);
     const day = ('0' + date.getDate()).slice(-2);
 
-    return `${year}-${month}-${day}`;
+    return Ymd ? `${year}-${month}-${day}` : `${day}-${month}-${year}`;
   }
 
   permisos() {

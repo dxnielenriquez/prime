@@ -65,6 +65,9 @@ export class UsersService {
   getAceptados(): Observable<any> {
     return this._http.get(`contratados/excel`, {responseType: 'arraybuffer'})
   }
+  getPagadora(): Observable<any> {
+    return this._http.get(`reporte-pagadora`, {responseType: 'blob'})
+  }
 
   getBancos(): Observable<any> {
     return this._http.get('catalogo-bancos');
